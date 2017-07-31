@@ -1,0 +1,22 @@
+<resources>
+    <string name="app_name">Popular Movies</string>
+
+    <string name="error_loading_list">Sorry, no movies found! Please verify your internet connection!</string>
+
+    <string name="sort">Sort by</string>
+    <string name="refresh">Refresh</string>
+    <string-array name="sort_options">
+        <item>Popular</item>
+        <item>Top Rated</item>
+    </string-array>
+    <string name="sort_option_popular">Popular</string>
+    <string name="sort_option_top_rated">Top Rated</string>
+
+    <string name="ok">OK</string>
+
+    <string name="title">Title</string>
+    <string name="original_title">Original Title</string>
+    <string name="release_date">Release Date</string>
+    <string name="overview">Synopsis</string>
+    <string name="movies_detail_poster_description">Poster of the movie</string>
+</resources>
