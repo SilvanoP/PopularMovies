@@ -6,5 +6,6 @@ Udacity Android Development Course
 Please before running put your key on the code.
 
 Path: src/main/java/br/com/udacity/popularmovies/util/HttpRequest
+
 There you can find the 'API_KEY' constant.
 
