@@ -12,8 +12,10 @@ import java.io.InputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
 
+import br.com.udacity.popularmovies.BuildConfig;
+
 public class HttpRequest {
-    private static final String API_KEY = ""; //FIXME Insert the API_KEY before running
+    private static final String API_KEY = BuildConfig.THE_MOVIE_DB_API_KEY;
     private static final String MOVIES_BASE_URL = "https://api.themoviedb.org/3/movie/";
     private static final String PARAM_API_KEY = "api_key";
     private static final String PARAM_LANGUAGE = "language";

@@ -1,50 +1,55 @@
 package br.com.udacity.popularmovies.view;
 
 import android.content.Context;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.os.AsyncTask;
 import android.os.Bundle;
-import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.widget.Toast;
 
-import java.io.InputStream;
-import java.util.ArrayList;
 import java.util.List;
 
 import br.com.udacity.popularmovies.R;
 import br.com.udacity.popularmovies.model.Movie;
+import br.com.udacity.popularmovies.util.AsyncTaskCallback;
 import br.com.udacity.popularmovies.util.Constants;
+import br.com.udacity.popularmovies.util.GetMoviesFromTMDbTask;
 import br.com.udacity.popularmovies.util.HttpRequest;
-import br.com.udacity.popularmovies.util.JsonParser;
+import butterknife.BindView;
+import butterknife.ButterKnife;
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends AppCompatActivity implements AsyncTaskCallback {
 
-    private RecyclerView mGridRecycleView;
+    @BindView(R.id.grid_recycle_view)
+    RecyclerView mGridRecycleView;
+    @BindView(R.id.main_toolbar)
+    Toolbar mToolbar;
     private GridMoviesAdapter mAdapter;
 
     private SharedPreferences mPreferences;
     private GridMoviesAdapter.GridItemClickListener mListener;
     private List<Movie> mMovies;
-    private boolean mUpdateGrid;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        ButterKnife.bind(this);
+
+        setSupportActionBar(mToolbar);
+        getSupportActionBar().setDisplayShowHomeEnabled(true);
 
         mPreferences = getSharedPreferences(Constants.PREFS_NAME, Context.MODE_PRIVATE);
+        int numColumns = getResources().getInteger(R.integer.movies_columns);
 
-        mGridRecycleView = (RecyclerView) findViewById(R.id.grid_recycle_view);
-        mGridRecycleView.setLayoutManager(new GridLayoutManager(this, 3));
+        mGridRecycleView.setLayoutManager(new GridLayoutManager(this, numColumns));
         mListener = new GridMoviesAdapter.GridItemClickListener(){
             @Override
             public void onGridItemClick(int clickedItemIndex) {
@@ -59,42 +64,19 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void runGetMoviesTask() {
-        String endpoint = mPreferences.getString(Constants.PREFERENCE_SORT_MOVIES, Constants.POPULAR_ENDPOINT);
-        new GetMoviesFromTMDbTask(this).execute(endpoint);
+        if (!HttpRequest.isOnline(this)) {
+            Log.d(this.getClass().getSimpleName(), "No Internet Connection");
+            Toast.makeText(this, R.string.error_internet_connection, Toast.LENGTH_LONG).show();
+        } else {
+            String endpoint = mPreferences.getString(Constants.PREFERENCE_SORT_MOVIES, Constants.POPULAR_ENDPOINT);
+            new GetMoviesFromTMDbTask(this).execute(endpoint);
+        }
     }
 
-    private class GetMoviesFromTMDbTask extends AsyncTask<String, Integer, List<Movie>> {
-
-        Context mContext;
-
-        GetMoviesFromTMDbTask(Context context) {
-            mContext = context;
-        }
-
-        @Override
-        protected List<Movie> doInBackground(String... strings) {
-            List<Movie> movies = new ArrayList<>();
-            if (!HttpRequest.isOnline(mContext)) {
-                Log.d("MainActivity", "No Internet Connection");
-                return movies;
-            }
-
-            try {
-                String endpoint = strings[0];
-                InputStream response = HttpRequest.getResponseFromTMDb(endpoint);
-                movies = JsonParser.parseMoviesFromJson(response);
-            } catch (Exception e) {
-                Log.d("MainActivity", "Error response or JSON");
-                e.printStackTrace();
-            }
-            return movies;
-        }
-
-        @Override
-        protected void onPostExecute(List<Movie> movies) {
-            mMovies = movies;
-            refreshMoviesGrid();
-        }
+    @Override
+    public void onAsyncTaskComplete(List<Movie> movies) {
+        mMovies = movies;
+        refreshMoviesGrid();
     }
 
     private void refreshMoviesGrid() {

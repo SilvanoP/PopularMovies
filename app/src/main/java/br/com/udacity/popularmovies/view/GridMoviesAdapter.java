@@ -16,6 +16,8 @@ import java.util.List;
 import br.com.udacity.popularmovies.R;
 import br.com.udacity.popularmovies.model.Movie;
 import br.com.udacity.popularmovies.util.Constants;
+import butterknife.BindView;
+import butterknife.ButterKnife;
 
 public class GridMoviesAdapter extends RecyclerView.Adapter<GridMoviesAdapter.GridMoviesViewHolder> {
 
@@ -54,25 +56,27 @@ public class GridMoviesAdapter extends RecyclerView.Adapter<GridMoviesAdapter.Gr
 
     class GridMoviesViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
 
+        @BindView(R.id.movie_poster_image)
         ImageView posterImageView;
+        @BindView(R.id.movie_name_text)
         TextView movieNameTextView;
+        @BindView(R.id.movie_score_rating)
         RatingBar movieRatingBar;
 
         public GridMoviesViewHolder(View v) {
             super(v);
-
-            posterImageView = v.findViewById(R.id.movie_poster_image);
-            movieNameTextView = v.findViewById(R.id.movie_name_text);
-            movieRatingBar = v.findViewById(R.id.movie_score_rating);
             v.setOnClickListener(this);
+
+            ButterKnife.bind(this, v);
         }
 
         void bind(Movie movie) {
-            if (movie.getPosterUrl() != null && !movie.getPosterUrl().isEmpty()) {
-                String url = Constants.POSTER_BASE_URL + Constants.POSTER_SMALL_SIZE + movie.getPosterUrl();
+            String url = Constants.POSTER_BASE_URL + Constants.POSTER_SMALL_SIZE + movie.getPosterUrl();
 
-                Picasso.with(mContext).load(url).into(posterImageView);
-            }
+            Picasso.with(mContext).load(url)
+                    .placeholder(R.mipmap.ic_launcher)
+                    .error(R.drawable.error_loading_image)
+                    .into(posterImageView);
 
             movieNameTextView.setText(movie.getName());
             movieRatingBar.setRating(movie.getVoteAverage());
