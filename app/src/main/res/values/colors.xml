@@ -3,7 +3,10 @@
     <color name="colorPrimary">#00695c</color>
     <color name="colorPrimaryDark">#003d33</color>
     <color name="textColorPrimary">#FFFFFF</color>
-    <color name="colorAccent">#FF4081</color>
-    <color name="windowBackground">#FFFFFF</color>
-    <color name="navigationBarColor">#000000</color>
+    <color name="colorAccent">#c2185b</color>
+    <color name="colorWindowBackground">#000000</color>
+    <color name="colorText">#cfd8dc</color>
+
+    <color name="colorRatingNormal">#cfd8dc</color>
+    <color name="colorRatingFilled">#c2185b</color>
 </resources>

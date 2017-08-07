@@ -79,7 +79,8 @@ public class GridMoviesAdapter extends RecyclerView.Adapter<GridMoviesAdapter.Gr
                     .into(posterImageView);
 
             movieNameTextView.setText(movie.getName());
-            movieRatingBar.setRating(movie.getVoteAverage());
+            float scoreMax5 = (movie.getVoteAverage() * 5)/10;
+            movieRatingBar.setRating(scoreMax5);
         }
 
         @Override

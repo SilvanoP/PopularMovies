@@ -4,7 +4,6 @@ public class Constants {
 
     public static final String POSTER_BASE_URL = "http://image.tmdb.org/t/p/";
     public static final String POSTER_SMALL_SIZE = "w185/";
-    public static final String POSTER_LARGE_SIZE = "w300/";
 
     public static final String PREFS_NAME = "USER_PREFERENCE";
     public static final String PREFERENCE_SORT_MOVIES = "SORT_ORDER";
