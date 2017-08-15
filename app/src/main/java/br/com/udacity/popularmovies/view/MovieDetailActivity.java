@@ -13,6 +13,7 @@ import com.squareup.picasso.Picasso;
 
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
+import java.util.Date;
 
 import br.com.udacity.popularmovies.R;
 import br.com.udacity.popularmovies.model.Movie;
@@ -49,9 +50,11 @@ public class MovieDetailActivity extends AppCompatActivity {
         getSupportActionBar().setDisplayShowHomeEnabled(true);
 
         Intent i = getIntent();
-        mMovie = i.getParcelableExtra(Constants.INTENT_EXTRA_MOVIE);
+        if (i != null && i.hasExtra(Constants.INTENT_EXTRA_MOVIE)) {
+            mMovie = i.getParcelableExtra(Constants.INTENT_EXTRA_MOVIE);
 
-        fillFields();
+            fillFields();
+        }
     }
 
     private void fillFields() {
@@ -66,10 +69,10 @@ public class MovieDetailActivity extends AppCompatActivity {
                     .into(mPosterImageView);
 
             SimpleDateFormat releaseDateMask = new SimpleDateFormat("(yyyy)");
-            Calendar releaseDate = mMovie.getReleaseDate();
+            Date releaseDate = mMovie.getReleaseDate();
             String movieTitle = mMovie.getName();
             if (releaseDate != null) {
-                movieTitle += " " + releaseDateMask.format(releaseDate.getTimeInMillis());
+                movieTitle += " " + releaseDateMask.format(releaseDate);
             }
             float scoreMax5 = (mMovie.getVoteAverage() * 5)/10;
             mNameTextView.setText(movieTitle);

@@ -19,8 +19,11 @@
                     android:id="@+id/popular_menu_item"
                     android:title="@string/sort_option_popular"/>
                 <item
-                    android:id="@+id/top_rated_meu_item"
+                    android:id="@+id/top_rated_menu_item"
                     android:title="@string/sort_option_top_rated"/>
+                <item
+                    android:id="@+id/favorite_menu_item"
+                    android:title="@string/sort_option_favorites"/>
             </group>
         </menu>
     </item>

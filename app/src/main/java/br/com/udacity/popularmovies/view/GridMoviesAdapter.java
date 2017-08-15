@@ -24,12 +24,12 @@ public class GridMoviesAdapter extends RecyclerView.Adapter<GridMoviesAdapter.Gr
     private final GridItemClickListener mOnClickListener;
 
     private Context mContext;
-    private List<Movie> movies;
+    private List<Movie> mMovies;
 
     public GridMoviesAdapter(Context context, List<Movie> movies, GridItemClickListener listener) {
         mContext = context;
         mOnClickListener = listener;
-        this.movies = movies;
+        this.mMovies = movies;
     }
 
     public interface GridItemClickListener {
@@ -45,13 +45,25 @@ public class GridMoviesAdapter extends RecyclerView.Adapter<GridMoviesAdapter.Gr
 
     @Override
     public void onBindViewHolder(GridMoviesViewHolder holder, int position) {
-        Movie movie = movies.get(position);
+        Movie movie = mMovies.get(position);
         holder.bind(movie);
     }
 
     @Override
     public int getItemCount() {
-        return movies.size();
+        return mMovies.size();
+    }
+
+    public void addItems(List<Movie> newMovies) {
+        int startPos = mMovies.size();
+        mMovies.addAll(newMovies);
+        this.notifyItemRangeInserted(startPos, newMovies.size());
+    }
+
+    public void swapItems(List<Movie> newMovies) {
+        mMovies.clear();
+        mMovies = newMovies;
+        this.notifyDataSetChanged();
     }
 
     class GridMoviesViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {

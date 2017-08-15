@@ -3,20 +3,36 @@ package br.com.udacity.popularmovies.model;
 import android.os.Parcel;
 import android.os.Parcelable;
 
+import com.google.gson.annotations.SerializedName;
+
+import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Date;
+import java.util.List;
 
 public class Movie implements Parcelable {
 
     private Long id;
+    @SerializedName("poster_path")
     private String posterUrl;
+    @SerializedName("title")
     private String name;
+    @SerializedName("original_title")
     private String originalName;
+    @SerializedName("vote_average")
     private Float voteAverage;
     private Float popularity;
     private String overview;
-    private Calendar releaseDate;
+    @SerializedName("release_date")
+    private Date releaseDate;
+    @SerializedName("video")
+    private String trailerCode;
+    private transient boolean isFavorite;
+    private transient List<Review> reviews;
 
-    public Movie(){}
+    public Movie(){
+        isFavorite = false;
+    }
 
     protected Movie(Parcel in) {
         id = in.readLong();
@@ -26,7 +42,11 @@ public class Movie implements Parcelable {
         voteAverage = in.readFloat();
         popularity = in.readFloat();
         overview = in.readString();
-        releaseDate = (Calendar) in.readSerializable();
+        releaseDate = new Date(in.readLong());
+        trailerCode = in.readString();
+        isFavorite = in.readInt() == 0 ? false : true;
+        reviews = new ArrayList<>();
+        in.readList(reviews,null);
     }
 
     public Long getId() {
@@ -87,12 +107,36 @@ public class Movie implements Parcelable {
         this.overview = overview;
     }
 
-    public Calendar getReleaseDate() {
+    public Date getReleaseDate() {
         return releaseDate;
     }
 
-    public void setReleaseDate(Calendar releaseDate) {
+    public void setReleaseDate(Date releaseDate) {
         this.releaseDate = releaseDate;
+    }
+
+    public String getTrailerCode() {
+        return trailerCode;
+    }
+
+    public void setTrailerCode(String trailerCode) {
+        this.trailerCode = trailerCode;
+    }
+
+    public boolean isFavorite() {
+        return isFavorite;
+    }
+
+    public void setFavorite(boolean favorite) {
+        isFavorite = favorite;
+    }
+
+    public List<Review> getReviews() {
+        return reviews;
+    }
+
+    public void setReviews(List<Review> reviews) {
+        this.reviews = reviews;
     }
 
     public boolean isEmpty() {
@@ -113,7 +157,11 @@ public class Movie implements Parcelable {
         dest.writeFloat(voteAverage);
         dest.writeFloat(popularity);
         dest.writeString(overview);
-        dest.writeSerializable(releaseDate);
+        dest.writeLong(releaseDate.getTime());
+        dest.writeString(trailerCode);
+        int favorite = isFavorite ? 1 : 0;
+        dest.writeInt(favorite);
+        dest.writeList(reviews);
     }
 
     public static final Parcelable.Creator<Movie> CREATOR = new Parcelable.Creator<Movie>() {
