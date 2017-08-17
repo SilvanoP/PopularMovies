@@ -19,9 +19,31 @@
         <item name="android:windowSharedElementExitTransition">@android:transition/move</item>
     </style>
 
+    <style name="movieDetailStyle" parent="myMaterialTheme">
+        <item name="android:windowTranslucentStatus">true</item>
+        <item name="android:windowTranslucentNavigation">true</item>
+    </style>
+
     <style name="RatingBar" parent="Widget.AppCompat.RatingBar.Small">
         <item name="colorControlNormal">@color/colorRatingNormal</item>
         <item name="colorControlActivated">@color/colorRatingFilled</item>
+    </style>
+
+    <style name="text_category">
+        <item name="android:textStyle">bold</item>
+        <item name="android:textSize">@dimen/category_text_size</item>
+        <item name="android:layout_margin">@dimen/default_margin_value</item>
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">wrap_content</item>
+    </style>
+
+    <style name="Divider">
+        <item name="android:layout_marginStart">@dimen/default_margin_value</item>
+        <item name="android:layout_marginEnd">@dimen/default_margin_value</item>
+        <item name="android:layout_marginTop">@dimen/small_margin_value</item>
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">2dp</item>
+        <item name="android:background">@color/colorPrimaryDark</item>
     </style>
 
 </resources>

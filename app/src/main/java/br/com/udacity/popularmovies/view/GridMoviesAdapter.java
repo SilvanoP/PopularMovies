@@ -83,10 +83,10 @@ public class GridMoviesAdapter extends RecyclerView.Adapter<GridMoviesAdapter.Gr
         }
 
         void bind(Movie movie) {
-            String url = Constants.POSTER_BASE_URL + Constants.POSTER_SMALL_SIZE + movie.getPosterUrl();
+            String url = Constants.IMAGE_BASE_URL + Constants.POSTER_SMALL_SIZE + movie.getPosterUrl();
 
             Picasso.with(mContext).load(url)
-                    .placeholder(R.mipmap.ic_launcher)
+                    .placeholder(R.drawable.error_loading_image)
                     .error(R.drawable.error_loading_image)
                     .into(posterImageView);
 

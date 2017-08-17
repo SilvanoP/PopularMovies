@@ -4,6 +4,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.os.Parcelable;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -14,13 +15,16 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.widget.Toast;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import br.com.udacity.popularmovies.R;
+import br.com.udacity.popularmovies.database.MovieContract;
 import br.com.udacity.popularmovies.model.Movie;
-import br.com.udacity.popularmovies.util.AsyncTaskCallback;
+import br.com.udacity.popularmovies.util.tasks.AsyncTaskCallback;
 import br.com.udacity.popularmovies.util.Constants;
-import br.com.udacity.popularmovies.util.GetMoviesAsyncTask;
+import br.com.udacity.popularmovies.util.tasks.GetMoviesFromLocalDBAsyncTask;
+import br.com.udacity.popularmovies.util.tasks.GetMoviesFromTheMovieDBAsyncTask;
 import br.com.udacity.popularmovies.util.Utils;
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -28,6 +32,8 @@ import butterknife.ButterKnife;
 public class MainActivity extends AppCompatActivity implements AsyncTaskCallback {
 
     private final int NUM_MOVIES_PER_PAGE = 20;
+    private final String CURRENT_PAGE_LOADED_KEY = "CURRENT_PAGE_LOADED_KEY";
+    private final String MOVIES_LIST_KEY = "MOVIES_LIST_KEY";
 
     @BindView(R.id.grid_recycle_view)
     RecyclerView mGridRecycleView;
@@ -66,7 +72,7 @@ public class MainActivity extends AppCompatActivity implements AsyncTaskCallback
                 if (last >= ((NUM_MOVIES_PER_PAGE-1) * mCurrentMoviePage)) {
                     mLoadMoreMovies = true;
                     mCurrentMoviePage++;
-                    runGetMoviesTask();
+                    runGetMoviesFromTheMovieDBTask();
             }
         }
         });
@@ -83,17 +89,31 @@ public class MainActivity extends AppCompatActivity implements AsyncTaskCallback
 
         mCurrentMoviePage = 1; //first page
         mLoadMoreMovies = false;
-        runGetMoviesTask();
+        if (savedInstanceState != null) {
+            mCurrentMoviePage = savedInstanceState.getInt(CURRENT_PAGE_LOADED_KEY, 1);
+            mMovies = savedInstanceState.getParcelableArrayList(MOVIES_LIST_KEY);
+            refreshMoviesGrid();
+        } else {
+            if (mCurrentSortOption.equals(Constants.FAVORITE_ENDPOINT)) {
+                runGetMoviesFromLocalDBTask();
+            } else {
+                runGetMoviesFromTheMovieDBTask();
+            }
+        }
     }
 
-    private void runGetMoviesTask() {
+    private void runGetMoviesFromTheMovieDBTask() {
         if (!Utils.isOnline(this)) {
-            Log.d(this.getClass().getSimpleName(), "No Internet Connection");
             Toast.makeText(this, R.string.error_internet_connection, Toast.LENGTH_LONG).show();
         } else {
             String params[] = {mCurrentSortOption, String.valueOf(mCurrentMoviePage)};
-            new GetMoviesAsyncTask(this).execute(params);
+            new GetMoviesFromTheMovieDBAsyncTask(this).execute(params);
         }
+    }
+
+    private void runGetMoviesFromLocalDBTask() {
+        String params[] = {MovieContract.MovieEntry.CONTENT_URI.toString()};
+        new GetMoviesFromLocalDBAsyncTask(this, this).execute(params);
     }
 
     @Override
@@ -137,6 +157,9 @@ public class MainActivity extends AppCompatActivity implements AsyncTaskCallback
         } else if (mCurrentSortOption.equals(Constants.TOP_RATED_ENDPOINT)) {
             MenuItem topRatedMenuItem = menu.findItem(R.id.top_rated_menu_item);
             topRatedMenuItem.setChecked(true);
+        } else if (mCurrentSortOption.equals(Constants.FAVORITE_ENDPOINT)) {
+            MenuItem favoriteMenuItem = menu.findItem(R.id.favorite_menu_item);
+            favoriteMenuItem.setChecked(true);
         }
 
         return true;
@@ -154,7 +177,7 @@ public class MainActivity extends AppCompatActivity implements AsyncTaskCallback
                     editor.apply();
 
                     mCurrentMoviePage = 1; // reset the movie page that will be loaded
-                    runGetMoviesTask();
+                    runGetMoviesFromTheMovieDBTask();
                 }
                 return true;
             case R.id.top_rated_menu_item:
@@ -166,12 +189,16 @@ public class MainActivity extends AppCompatActivity implements AsyncTaskCallback
                     editor.apply();
 
                     mCurrentMoviePage = 1; // reset the movie page that will be loaded
-                    runGetMoviesTask();
+                    runGetMoviesFromTheMovieDBTask();
                 }
                 return true;
             case R.id.refresh_movies_item:
                 mCurrentMoviePage = 1; // reset the movie page that will be loaded
-                runGetMoviesTask();
+                if (mCurrentSortOption == Constants.FAVORITE_ENDPOINT) {
+                    runGetMoviesFromLocalDBTask();
+                } else {
+                    runGetMoviesFromTheMovieDBTask();
+                }
                 return true;
             case R.id.favorite_menu_item:
                 if (!item.isChecked()) {
@@ -182,11 +209,19 @@ public class MainActivity extends AppCompatActivity implements AsyncTaskCallback
                     editor.apply();
 
                     mCurrentMoviePage = 1; // reset the movie page that will be loaded
-                    runGetMoviesTask();
+                    runGetMoviesFromLocalDBTask();
                 }
                 return true;
             default:
                 return super.onOptionsItemSelected(item);
         }
+    }
+
+    @Override
+    protected void onSaveInstanceState(Bundle outState) {
+        outState.putInt(CURRENT_PAGE_LOADED_KEY, mCurrentMoviePage);
+        outState.putParcelableArrayList(MOVIES_LIST_KEY, new ArrayList<Parcelable>(mMovies));
+
+        super.onSaveInstanceState(outState);
     }
 }

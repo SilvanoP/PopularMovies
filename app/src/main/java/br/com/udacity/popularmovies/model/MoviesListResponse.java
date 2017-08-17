@@ -7,21 +7,11 @@ import java.util.List;
 
 public class MoviesListResponse {
 
-    private int page;
     @SerializedName("results")
     private List<Movie> movies;
 
     public MoviesListResponse() {
-        page = 0;
         movies = new ArrayList<>();
-    }
-
-    public int getPage() {
-        return page;
-    }
-
-    public void setPage(int page) {
-        this.page = page;
     }
 
     public List<Movie> getMovies() {

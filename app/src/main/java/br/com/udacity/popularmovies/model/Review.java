@@ -5,7 +5,7 @@ import android.os.Parcelable;
 
 public class Review implements Parcelable {
 
-    private Long id;
+    private String id;
     private String author;
     private String content;
     private transient Long movieId;
@@ -13,17 +13,17 @@ public class Review implements Parcelable {
     public Review(){}
 
     public Review(Parcel in) {
-        id = in.readLong();
+        id = in.readString();
         author = in.readString();
         content = in.readString();
         movieId = in.readLong();
     }
 
-    public Long getId() {
+    public String getId() {
         return id;
     }
 
-    public void setId(Long id) {
+    public void setId(String id) {
         this.id = id;
     }
 
@@ -58,7 +58,7 @@ public class Review implements Parcelable {
 
     @Override
     public void writeToParcel(Parcel dest, int i) {
-        dest.writeLong(id);
+        dest.writeString(id);
         dest.writeString(author);
         dest.writeString(content);
         dest.writeLong(movieId);

@@ -1,10 +1,8 @@
 package br.com.udacity.popularmovies.util;
 
-import java.util.List;
-
-import br.com.udacity.popularmovies.model.Movie;
 import br.com.udacity.popularmovies.model.MoviesListResponse;
 import br.com.udacity.popularmovies.model.ReviewsListResponse;
+import br.com.udacity.popularmovies.model.VideosListResponse;
 import retrofit2.Call;
 import retrofit2.http.GET;
 import retrofit2.http.Path;
@@ -23,7 +21,12 @@ public interface TheMovieDBClient {
             @Query("page") int page
     );
     @GET("/3/movie/{movie_id}/reviews")
-    Call<List<ReviewsListResponse>> getReviews(
+    Call<ReviewsListResponse> getReviews(
+            @Path("movie_id") String movieId,
+            @Query("api_key") String apiKey
+    );
+    @GET("/3/movie/{movie_id}/videos")
+    Call<VideosListResponse> getVideos(
             @Path("movie_id") String movieId,
             @Query("api_key") String apiKey
     );

@@ -6,17 +6,17 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * Created by Silvano Damasceno on 14/08/2017.
+ * Created by Silvano Damasceno on 15/08/2017.
  */
 
-public class ReviewsListResponse {
+public class VideosListResponse {
 
     private Long id; // this refers to movie id
     @SerializedName("results")
-    private List<Review> reviews;
+    private List<Video> videos;
 
-    public ReviewsListResponse() {
-        reviews = new ArrayList<>();
+    public VideosListResponse() {
+        videos = new ArrayList<>();
     }
 
     public Long getId() {
@@ -27,11 +27,11 @@ public class ReviewsListResponse {
         this.id = id;
     }
 
-    public List<Review> getReviews() {
-        return reviews;
+    public List<Video> getVideos() {
+        return videos;
     }
 
-    public void setReviews(List<Review> reviews) {
-        this.reviews = reviews;
+    public void setVideos(List<Video> videos) {
+        this.videos = videos;
     }
 }
