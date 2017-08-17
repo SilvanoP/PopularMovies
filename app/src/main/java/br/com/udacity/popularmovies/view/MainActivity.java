@@ -88,12 +88,19 @@ public class MainActivity extends AppCompatActivity implements AsyncTaskCallback
         mCurrentMoviePage = 1; //first page
         mLoadMoreMovies = false;
 
-        if (mCurrentSortOption.equals(Constants.FAVORITE_ENDPOINT)) {
-            runGetMoviesFromLocalDBTask();
-        } else {
+        if (!mCurrentSortOption.equals(Constants.FAVORITE_ENDPOINT)) {
             runGetMoviesFromTheMovieDBTask();
         }
+    }
 
+    @Override
+    protected void onResume() {
+        super.onResume();
+        // Only the database needs to be updated on onResume, since it was keeping the movies
+        // even after thee user 'unfavorited' it on detail screen and pressed back
+        if (mCurrentSortOption.equals(Constants.FAVORITE_ENDPOINT)) {
+            runGetMoviesFromLocalDBTask();
+        }
     }
 
     private void runGetMoviesFromTheMovieDBTask() {
