@@ -16,24 +16,21 @@ import java.util.List;
 import br.com.udacity.popularmovies.R;
 import br.com.udacity.popularmovies.model.Movie;
 import br.com.udacity.popularmovies.util.Constants;
+import br.com.udacity.popularmovies.util.ItemClickListener;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
 public class GridMoviesAdapter extends RecyclerView.Adapter<GridMoviesAdapter.GridMoviesViewHolder> {
 
-    private final GridItemClickListener mOnClickListener;
+    private final ItemClickListener mOnClickListener;
 
     private Context mContext;
     private List<Movie> mMovies;
 
-    public GridMoviesAdapter(Context context, List<Movie> movies, GridItemClickListener listener) {
+    public GridMoviesAdapter(Context context, List<Movie> movies, ItemClickListener listener) {
         mContext = context;
         mOnClickListener = listener;
         this.mMovies = movies;
-    }
-
-    public interface GridItemClickListener {
-        void onGridItemClick(int clickedItemIndex);
     }
 
     @Override
@@ -98,7 +95,7 @@ public class GridMoviesAdapter extends RecyclerView.Adapter<GridMoviesAdapter.Gr
         @Override
         public void onClick(View view) {
             int clickedPosition = getAdapterPosition();
-            mOnClickListener.onGridItemClick(clickedPosition);
+            mOnClickListener.onItemClick(clickedPosition);
         }
     }
 }

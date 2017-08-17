@@ -10,7 +10,7 @@ import br.com.udacity.popularmovies.model.Movie;
 public class MovieDAO extends SQLiteOpenHelper {
 
     private static final String DATABASE_NAME = "movieDb.db";
-    private static final int VERSION = 4;
+    private static final int VERSION = 1;
 
     public MovieDAO(Context context) {
         super(context, DATABASE_NAME, null, VERSION);

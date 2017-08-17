@@ -14,6 +14,7 @@ import java.util.List;
 
 import br.com.udacity.popularmovies.R;
 import br.com.udacity.popularmovies.model.Video;
+import br.com.udacity.popularmovies.util.ItemClickListener;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
@@ -21,16 +22,12 @@ import butterknife.ButterKnife;
 public class ListTrailersAdapter extends RecyclerView.Adapter<ListTrailersAdapter.ListTrailerViewHolder> {
 
     private final String YOUTUBE_BASE_URL = "http://img.youtube.com/vi/";
+    private final ItemClickListener mListener;
 
     private Context mContext;
     private List<Video> mTrailers;
-    private ListTrailerClickListener mListener;
 
-    public interface ListTrailerClickListener {
-        void onListItemClick(int clickedItemIndex);
-    }
-
-    public ListTrailersAdapter(Context context, List<Video> trailers, ListTrailerClickListener listener) {
+    public ListTrailersAdapter(Context context, List<Video> trailers, ItemClickListener listener) {
         mContext = context;
         mTrailers = trailers;
         mListener = listener;
@@ -81,7 +78,7 @@ public class ListTrailersAdapter extends RecyclerView.Adapter<ListTrailersAdapte
         @Override
         public void onClick(View view) {
             int clickedPosition = getAdapterPosition();
-            mListener.onListItemClick(clickedPosition);
+            mListener.onItemClick(clickedPosition);
         }
     }
 }

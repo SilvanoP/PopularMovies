@@ -4,6 +4,7 @@ import android.content.ContentValues;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
+import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -16,7 +17,6 @@ import android.widget.Toast;
 
 import com.squareup.picasso.Picasso;
 
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -30,7 +30,9 @@ import br.com.udacity.popularmovies.model.ReviewsListResponse;
 import br.com.udacity.popularmovies.model.Video;
 import br.com.udacity.popularmovies.model.VideosListResponse;
 import br.com.udacity.popularmovies.util.Constants;
+import br.com.udacity.popularmovies.util.ItemClickListener;
 import br.com.udacity.popularmovies.util.TheMovieDBClient;
+import br.com.udacity.popularmovies.util.Utils;
 import br.com.udacity.popularmovies.util.tasks.AsyncTaskCallback;
 import br.com.udacity.popularmovies.util.tasks.GetMoviesFromLocalDBAsyncTask;
 import butterknife.BindView;
@@ -60,20 +62,22 @@ public class MovieDetailActivity extends AppCompatActivity implements AsyncTaskC
     TextView mScoreRatingTextView;
     @BindView(R.id.movie_detail_score_rating)
     RatingBar mRatingBar;
-    @BindView(R.id.movie_detail_favorite_image)
-    ImageView mIsFavoriteImage;
+    @BindView(R.id.movie_detail_favorite_button)
+    FloatingActionButton mIsFavoriteButton;
     @BindView(R.id.movie_detail_trailers_list)
     RecyclerView mTrailerRecyclerView;
     @BindView(R.id.movie_detail_reviews_list)
     RecyclerView mReviewsRecyclerView;
+    @BindView(R.id.empty_trailers_text)
+    TextView mEmptyTrailerTextView;
+    @BindView(R.id.empty_reviews_text)
+    TextView mEmptyReviewTextView;
 
     private Movie mMovie;
     private List<Review> mReviews;
     private List<Video> mTrailers;
+    private ItemClickListener mTrailerListener;
 
-    private ListTrailersAdapter mTrailerAdapter;
-    private ListTrailersAdapter.ListTrailerClickListener mListener;
-    private ListReviewsAdapter mReviewAdapter;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -84,9 +88,9 @@ public class MovieDetailActivity extends AppCompatActivity implements AsyncTaskC
         mTrailers = new ArrayList<>();
 
         mTrailerRecyclerView.setLayoutManager(new LinearLayoutManager(this));
-        mListener = new ListTrailersAdapter.ListTrailerClickListener() {
+        mTrailerListener = new ItemClickListener() {
             @Override
-            public void onListItemClick(int clickedItemIndex) {
+            public void onItemClick(int clickedItemIndex) {
                 Video trailer = mTrailers.get(clickedItemIndex);
                 String url = YOUTUBE_BASE_URL + trailer.getKey();
 
@@ -99,7 +103,7 @@ public class MovieDetailActivity extends AppCompatActivity implements AsyncTaskC
 
         mReviewsRecyclerView.setLayoutManager(new LinearLayoutManager(this));
 
-        mIsFavoriteImage.setOnClickListener(new View.OnClickListener() {
+        mIsFavoriteButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 if (mMovie.isFavorite()) {
@@ -115,12 +119,12 @@ public class MovieDetailActivity extends AppCompatActivity implements AsyncTaskC
 
                     if (numDeleted > 0) {
                         mMovie.setFavorite(false);
-                        mIsFavoriteImage.setImageResource(R.drawable.ic_not_favorite);
+                        mIsFavoriteButton.setImageResource(R.drawable.ic_not_favorite);
                     }
                     Log.i(MovieDetailActivity.class.getSimpleName(), "Deleted " + numDeleted + " rows!");
                 } else {
                     mMovie.setFavorite(true);
-                    String releaseDate = new SimpleDateFormat("yyyy-MM-dd").format(mMovie.getReleaseDate());
+                    String releaseDate = Utils.dateToString(mMovie.getReleaseDate());
 
                     Uri uri = MovieContract.MovieEntry.CONTENT_URI;
                     ContentValues values = new ContentValues();
@@ -139,7 +143,7 @@ public class MovieDetailActivity extends AppCompatActivity implements AsyncTaskC
                         e.printStackTrace();
                     }
                     if (savedUri != Uri.EMPTY) {
-                        mIsFavoriteImage.setImageResource(R.drawable.ic_is_favorite);
+                        mIsFavoriteButton.setImageResource(R.drawable.ic_is_favorite);
                     } else { //if it was not saved then keep favorite as false
                         mMovie.setFavorite(false);
                     }
@@ -188,11 +192,10 @@ public class MovieDetailActivity extends AppCompatActivity implements AsyncTaskC
                     .error(R.drawable.error_loading_image)
                     .into(mPosterImageView);
 
-            SimpleDateFormat releaseDateMask = new SimpleDateFormat("(yyyy)");
             Date releaseDate = mMovie.getReleaseDate();
             String movieTitle = mMovie.getName();
             if (releaseDate != null) {
-                movieTitle += " " + releaseDateMask.format(releaseDate);
+                movieTitle += " " + Utils.dateToString(releaseDate, "(yyyy)");
             }
             float scoreMax5 = (mMovie.getVoteAverage() * 5)/10;
             mNameTextView.setText(movieTitle);
@@ -205,16 +208,30 @@ public class MovieDetailActivity extends AppCompatActivity implements AsyncTaskC
     }
 
     private void fillTrailerList(List<Video> trailers) {
-        mTrailerAdapter = new ListTrailersAdapter(this, trailers, mListener);
-        mTrailerRecyclerView.setAdapter(mTrailerAdapter);
+        if (trailers.size() == 0) {
+            mTrailerRecyclerView.setVisibility(View.GONE);
+            mEmptyTrailerTextView.setVisibility(View.VISIBLE);
+        } else {
+            mTrailerRecyclerView.setVisibility(View.VISIBLE);
+            mEmptyTrailerTextView.setVisibility(View.GONE);
 
+            ListTrailersAdapter trailerAdapter = new ListTrailersAdapter(this, trailers, mTrailerListener);
+            mTrailerRecyclerView.setAdapter(trailerAdapter);
+        }
         mTrailers = trailers;
     }
 
     private void fillReviewList(List<Review> reviews) {
-        mReviewAdapter = new ListReviewsAdapter(this, reviews);
-        mReviewsRecyclerView.setAdapter(mReviewAdapter);
+        if (reviews.size() == 0) {
+            mReviewsRecyclerView.setVisibility(View.GONE);
+            mEmptyReviewTextView.setVisibility(View.VISIBLE);
+        } else {
+            mReviewsRecyclerView.setVisibility(View.VISIBLE);
+            mEmptyReviewTextView.setVisibility(View.GONE);
 
+            ListReviewsAdapter reviewAdapter = new ListReviewsAdapter(this, reviews);
+            mReviewsRecyclerView.setAdapter(reviewAdapter);
+        }
         mReviews = reviews;
     }
 
@@ -280,10 +297,10 @@ public class MovieDetailActivity extends AppCompatActivity implements AsyncTaskC
     @Override
     public void onAsyncTaskComplete(List<Movie> movies) {
         if (movies.size() == 1) {
-            mIsFavoriteImage.setImageResource(R.drawable.ic_is_favorite);
+            mIsFavoriteButton.setImageResource(R.drawable.ic_is_favorite);
             mMovie.setFavorite(true);
         } else {
-            mIsFavoriteImage.setImageResource(R.drawable.ic_not_favorite);
+            mIsFavoriteButton.setImageResource(R.drawable.ic_not_favorite);
             mMovie.setFavorite(false);
         }
     }

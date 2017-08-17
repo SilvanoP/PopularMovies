@@ -4,23 +4,21 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
-import android.os.Parcelable;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.widget.Toast;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import br.com.udacity.popularmovies.R;
 import br.com.udacity.popularmovies.database.MovieContract;
 import br.com.udacity.popularmovies.model.Movie;
+import br.com.udacity.popularmovies.util.ItemClickListener;
 import br.com.udacity.popularmovies.util.tasks.AsyncTaskCallback;
 import br.com.udacity.popularmovies.util.Constants;
 import br.com.udacity.popularmovies.util.tasks.GetMoviesFromLocalDBAsyncTask;
@@ -32,8 +30,6 @@ import butterknife.ButterKnife;
 public class MainActivity extends AppCompatActivity implements AsyncTaskCallback {
 
     private final int NUM_MOVIES_PER_PAGE = 20;
-    private final String CURRENT_PAGE_LOADED_KEY = "CURRENT_PAGE_LOADED_KEY";
-    private final String MOVIES_LIST_KEY = "MOVIES_LIST_KEY";
 
     @BindView(R.id.grid_recycle_view)
     RecyclerView mGridRecycleView;
@@ -43,7 +39,7 @@ public class MainActivity extends AppCompatActivity implements AsyncTaskCallback
     private SharedPreferences mPreferences;
     private GridLayoutManager mLayoutManager;
     private GridMoviesAdapter mAdapter;
-    private GridMoviesAdapter.GridItemClickListener mListener;
+    private ItemClickListener mListener;
     private List<Movie> mMovies;
     private int mCurrentMoviePage; // the movie database page to load
     private boolean mLoadMoreMovies;
@@ -56,7 +52,9 @@ public class MainActivity extends AppCompatActivity implements AsyncTaskCallback
         ButterKnife.bind(this);
 
         setSupportActionBar(mToolbar);
-        getSupportActionBar().setDisplayShowHomeEnabled(true);
+        if (getSupportActionBar() != null) {
+            getSupportActionBar().setDisplayShowHomeEnabled(true);
+        }
 
         mPreferences = getSharedPreferences(Constants.PREFS_NAME, Context.MODE_PRIVATE);
         mCurrentSortOption = mPreferences.getString(Constants.PREFERENCE_SORT_MOVIES, Constants.POPULAR_ENDPOINT );
@@ -77,9 +75,9 @@ public class MainActivity extends AppCompatActivity implements AsyncTaskCallback
         }
         });
 
-        mListener = new GridMoviesAdapter.GridItemClickListener(){
+        mListener = new ItemClickListener(){
             @Override
-            public void onGridItemClick(int clickedItemIndex) {
+            public void onItemClick(int clickedItemIndex) {
                 Movie m = mMovies.get(clickedItemIndex);
                 Intent movieDetailIntent = new Intent(MainActivity.this, MovieDetailActivity.class);
                 movieDetailIntent.putExtra(Constants.INTENT_EXTRA_MOVIE, m);
@@ -89,17 +87,13 @@ public class MainActivity extends AppCompatActivity implements AsyncTaskCallback
 
         mCurrentMoviePage = 1; //first page
         mLoadMoreMovies = false;
-        if (savedInstanceState != null) {
-            mCurrentMoviePage = savedInstanceState.getInt(CURRENT_PAGE_LOADED_KEY, 1);
-            mMovies = savedInstanceState.getParcelableArrayList(MOVIES_LIST_KEY);
-            refreshMoviesGrid();
+
+        if (mCurrentSortOption.equals(Constants.FAVORITE_ENDPOINT)) {
+            runGetMoviesFromLocalDBTask();
         } else {
-            if (mCurrentSortOption.equals(Constants.FAVORITE_ENDPOINT)) {
-                runGetMoviesFromLocalDBTask();
-            } else {
-                runGetMoviesFromTheMovieDBTask();
-            }
+            runGetMoviesFromTheMovieDBTask();
         }
+
     }
 
     private void runGetMoviesFromTheMovieDBTask() {
@@ -151,15 +145,19 @@ public class MainActivity extends AppCompatActivity implements AsyncTaskCallback
     @Override
     public boolean onPrepareOptionsMenu(Menu menu) {
         super.onPrepareOptionsMenu(menu);
-        if (mCurrentSortOption.equals(Constants.POPULAR_ENDPOINT)) {
-            MenuItem popularMenuItem = menu.findItem(R.id.popular_menu_item);
-            popularMenuItem.setChecked(true);
-        } else if (mCurrentSortOption.equals(Constants.TOP_RATED_ENDPOINT)) {
-            MenuItem topRatedMenuItem = menu.findItem(R.id.top_rated_menu_item);
-            topRatedMenuItem.setChecked(true);
-        } else if (mCurrentSortOption.equals(Constants.FAVORITE_ENDPOINT)) {
-            MenuItem favoriteMenuItem = menu.findItem(R.id.favorite_menu_item);
-            favoriteMenuItem.setChecked(true);
+        switch (mCurrentSortOption) {
+            case Constants.POPULAR_ENDPOINT:
+                MenuItem popularMenuItem = menu.findItem(R.id.popular_menu_item);
+                popularMenuItem.setChecked(true);
+                break;
+            case Constants.TOP_RATED_ENDPOINT:
+                MenuItem topRatedMenuItem = menu.findItem(R.id.top_rated_menu_item);
+                topRatedMenuItem.setChecked(true);
+                break;
+            case Constants.FAVORITE_ENDPOINT:
+                MenuItem favoriteMenuItem = menu.findItem(R.id.favorite_menu_item);
+                favoriteMenuItem.setChecked(true);
+                break;
         }
 
         return true;
@@ -194,7 +192,7 @@ public class MainActivity extends AppCompatActivity implements AsyncTaskCallback
                 return true;
             case R.id.refresh_movies_item:
                 mCurrentMoviePage = 1; // reset the movie page that will be loaded
-                if (mCurrentSortOption == Constants.FAVORITE_ENDPOINT) {
+                if (mCurrentSortOption.equals(Constants.FAVORITE_ENDPOINT)) {
                     runGetMoviesFromLocalDBTask();
                 } else {
                     runGetMoviesFromTheMovieDBTask();
@@ -215,13 +213,5 @@ public class MainActivity extends AppCompatActivity implements AsyncTaskCallback
             default:
                 return super.onOptionsItemSelected(item);
         }
-    }
-
-    @Override
-    protected void onSaveInstanceState(Bundle outState) {
-        outState.putInt(CURRENT_PAGE_LOADED_KEY, mCurrentMoviePage);
-        outState.putParcelableArrayList(MOVIES_LIST_KEY, new ArrayList<Parcelable>(mMovies));
-
-        super.onSaveInstanceState(outState);
     }
 }

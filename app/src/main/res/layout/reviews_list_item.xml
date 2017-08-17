@@ -7,7 +7,9 @@
 
     <TextView
         android:id="@+id/review_author_text"
-        style="@style/text_category"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="@dimen/default_margin_value"
         android:layout_gravity="center_vertical"
         tools:text="@string/reviews"/>
 

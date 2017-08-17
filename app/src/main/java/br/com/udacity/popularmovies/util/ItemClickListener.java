@@ -1,9 +1,8 @@
 package br.com.udacity.popularmovies.util;
 
 /**
- * Created by Silvano Damasceno on 16/08/2017.
+ * Interface used for onItemClick on adapter
  */
-
 public interface ItemClickListener {
     public void onItemClick(int clickedItemIndex);
 }
