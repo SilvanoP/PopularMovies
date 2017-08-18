@@ -34,8 +34,7 @@ public class MovieDAO extends SQLiteOpenHelper {
 
     @Override
     public void onUpgrade(SQLiteDatabase sqLiteDatabase, int i, int i1) {
-        sqLiteDatabase.execSQL("DROP TABLE IF EXISTS " + MovieContract.MovieEntry.TABLE_NAME);
-        onCreate(sqLiteDatabase);
+        // No changes made on database for now, so nothing to do on this method
     }
 
 

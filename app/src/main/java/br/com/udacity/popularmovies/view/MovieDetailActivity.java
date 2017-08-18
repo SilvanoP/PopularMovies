@@ -1,6 +1,5 @@
 package br.com.udacity.popularmovies.view;
 
-import android.content.ContentValues;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
@@ -8,7 +7,6 @@ import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.RatingBar;
@@ -18,12 +16,9 @@ import android.widget.Toast;
 import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 
-import br.com.udacity.popularmovies.BuildConfig;
 import br.com.udacity.popularmovies.R;
-import br.com.udacity.popularmovies.database.MovieContract;
 import br.com.udacity.popularmovies.model.Movie;
 import br.com.udacity.popularmovies.model.Review;
 import br.com.udacity.popularmovies.model.ReviewsListResponse;
@@ -31,17 +26,14 @@ import br.com.udacity.popularmovies.model.Video;
 import br.com.udacity.popularmovies.model.VideosListResponse;
 import br.com.udacity.popularmovies.util.Constants;
 import br.com.udacity.popularmovies.util.ItemClickListener;
-import br.com.udacity.popularmovies.util.TheMovieDBClient;
 import br.com.udacity.popularmovies.util.Utils;
 import br.com.udacity.popularmovies.util.tasks.AsyncTaskCallback;
-import br.com.udacity.popularmovies.util.tasks.GetMoviesFromLocalDBAsyncTask;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
-import retrofit2.Retrofit;
-import retrofit2.converter.gson.GsonConverterFactory;
+import br.com.udacity.popularmovies.service.MovieService;
 
 public class MovieDetailActivity extends AppCompatActivity implements AsyncTaskCallback {
 
@@ -72,8 +64,11 @@ public class MovieDetailActivity extends AppCompatActivity implements AsyncTaskC
     TextView mEmptyTrailerTextView;
     @BindView(R.id.empty_reviews_text)
     TextView mEmptyReviewTextView;
+    @BindView(R.id.movie_detail_release_date_text)
+    TextView mReleaseDateTextView;
 
     private Movie mMovie;
+    private MovieService service;
     private List<Review> mReviews;
     private List<Video> mTrailers;
     private ItemClickListener mTrailerListener;
@@ -86,6 +81,7 @@ public class MovieDetailActivity extends AppCompatActivity implements AsyncTaskC
 
         mReviews = new ArrayList<>();
         mTrailers = new ArrayList<>();
+        service = new MovieService(this);
 
         mTrailerRecyclerView.setLayoutManager(new LinearLayoutManager(this));
         mTrailerListener = new ItemClickListener() {
@@ -107,47 +103,18 @@ public class MovieDetailActivity extends AppCompatActivity implements AsyncTaskC
             @Override
             public void onClick(View view) {
                 if (mMovie.isFavorite()) {
-                    Uri uri = MovieContract.MovieEntry.CONTENT_URI;
-                    uri = uri.buildUpon().appendPath(String.valueOf(mMovie.getId())).build();
-                    Log.d(MovieDetailActivity.class.getSimpleName(), "Uri to delete: " + uri);
-                    int numDeleted = 0;
-                    try {
-                        numDeleted = getContentResolver().delete(uri, null, null);
-                    } catch (UnsupportedOperationException e) {
-                        e.printStackTrace();
-                    }
-
-                    if (numDeleted > 0) {
+                    if (service.removeMovieFromFavorite(String.valueOf(mMovie.getId()))) {
                         mMovie.setFavorite(false);
                         mIsFavoriteButton.setImageResource(R.drawable.ic_not_favorite);
                     }
-                    Log.i(MovieDetailActivity.class.getSimpleName(), "Deleted " + numDeleted + " rows!");
                 } else {
                     mMovie.setFavorite(true);
-                    String releaseDate = Utils.dateToString(mMovie.getReleaseDate());
 
-                    Uri uri = MovieContract.MovieEntry.CONTENT_URI;
-                    ContentValues values = new ContentValues();
-                    values.put(MovieContract.MovieEntry._ID, mMovie.getId());
-                    values.put(MovieContract.MovieEntry.COLUMN_BACKDROP_URL, mMovie.getBackdropUrl());
-                    values.put(MovieContract.MovieEntry.COLUMN_POSTER_URL, mMovie.getPosterUrl());
-                    values.put(MovieContract.MovieEntry.COLUMN_NAME, mMovie.getName());
-                    values.put(MovieContract.MovieEntry.COLUMN_ORIGINAL_NAME, mMovie.getOriginalName());
-                    values.put(MovieContract.MovieEntry.COLUMN_OVERVIEW, mMovie.getOverview());
-                    values.put(MovieContract.MovieEntry.COLUMN_RELEASE_DATE, releaseDate);
-                    values.put(MovieContract.MovieEntry.COLUMN_VOTE_AVERAGE, mMovie.getVoteAverage());
-                    Uri savedUri = Uri.EMPTY;
-                    try {
-                        savedUri = getContentResolver().insert(uri, values);
-                    } catch (UnsupportedOperationException e) {
-                        e.printStackTrace();
-                    }
-                    if (savedUri != Uri.EMPTY) {
+                    if (service.saveMovieToFavorite(mMovie)) {
                         mIsFavoriteButton.setImageResource(R.drawable.ic_is_favorite);
                     } else { //if it was not saved then keep favorite as false
                         mMovie.setFavorite(false);
                     }
-                    Log.i(MovieDetailActivity.class.getSimpleName(), "Saved Uri: " + savedUri);
                 }
             }
         });
@@ -157,7 +124,7 @@ public class MovieDetailActivity extends AppCompatActivity implements AsyncTaskC
             mMovie = i.getParcelableExtra(Constants.INTENT_EXTRA_MOVIE);
 
             fillFields();
-            verifyIfFavorite();
+            service.verifyMovieFavorite(this, String.valueOf(mMovie.getId()));
             if (mTrailers.size() > 0) {
                 fillTrailerList(mTrailers);
             } else {
@@ -191,14 +158,12 @@ public class MovieDetailActivity extends AppCompatActivity implements AsyncTaskC
                     .placeholder(R.drawable.error_loading_image)
                     .error(R.drawable.error_loading_image)
                     .into(mPosterImageView);
-
-            Date releaseDate = mMovie.getReleaseDate();
-            String movieTitle = mMovie.getName();
-            if (releaseDate != null) {
-                movieTitle += " " + Utils.dateToString(releaseDate, "(yyyy)");
-            }
             float scoreMax5 = (mMovie.getVoteAverage() * 5)/10;
-            mNameTextView.setText(movieTitle);
+            String releaseDate = getResources().getString(R.string.release_date) + ": " +
+                    Utils.dateToString(mMovie.getReleaseDate(),"MM/dd/yyyy");
+
+            mNameTextView.setText(mMovie.getName());
+            mReleaseDateTextView.setText(releaseDate);
             mOriginalNameTextView.setText(mMovie.getOriginalName());
             mScoreRatingTextView.setText(String.valueOf(mMovie.getVoteAverage()));
             mRatingBar.setRating(scoreMax5);
@@ -235,26 +200,8 @@ public class MovieDetailActivity extends AppCompatActivity implements AsyncTaskC
         mReviews = reviews;
     }
 
-    private void verifyIfFavorite() {
-        String uri = MovieContract.MovieEntry.CONTENT_URI.toString();
-        String selection = "_id=?";
-        String selectionArg = String.valueOf(mMovie.getId());
-        String params[] = {uri, selection, selectionArg};
-        new GetMoviesFromLocalDBAsyncTask(this, this).execute(params);
-    }
-
-    private TheMovieDBClient createClient() {
-        Retrofit retrofit = new Retrofit.Builder()
-                .baseUrl(Constants.MOVIES_BASE_URL)
-                .addConverterFactory(GsonConverterFactory.create())
-                .build();
-
-        return retrofit.create(TheMovieDBClient.class);
-    }
-
     private void getTrailers() {
-        String apiKey = BuildConfig.THE_MOVIE_DB_API_KEY;
-        Call<VideosListResponse> call = createClient().getVideos(String.valueOf(mMovie.getId()), apiKey);
+        Call<VideosListResponse> call = service.getMovieTrailers(String.valueOf(mMovie.getId()));
         if (call != null) {
             call.enqueue(new Callback<VideosListResponse>() {
                 @Override
@@ -274,8 +221,7 @@ public class MovieDetailActivity extends AppCompatActivity implements AsyncTaskC
     }
 
     private void getReviews() {
-        String apiKey = BuildConfig.THE_MOVIE_DB_API_KEY;
-        Call<ReviewsListResponse> call = createClient().getReviews(String.valueOf(mMovie.getId()), apiKey);
+        Call<ReviewsListResponse> call = service.getMovieReviews(String.valueOf(mMovie.getId()));
         if (call != null) {
             call.enqueue(new Callback<ReviewsListResponse>() {
                 @Override

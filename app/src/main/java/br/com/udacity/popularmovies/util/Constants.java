@@ -1,6 +1,6 @@
 package br.com.udacity.popularmovies.util;
 
-public class Constants {
+public final class Constants {
 
     public static final String MOVIES_BASE_URL = "https://api.themoviedb.org/";
     public static final String IMAGE_BASE_URL = "http://image.tmdb.org/t/p/";

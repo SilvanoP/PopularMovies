@@ -18,6 +18,8 @@ import java.util.List;
 
 import br.com.udacity.popularmovies.BuildConfig;
 import br.com.udacity.popularmovies.model.Movie;
+import retrofit2.Retrofit;
+import retrofit2.converter.gson.GsonConverterFactory;
 
 public class Utils {
 

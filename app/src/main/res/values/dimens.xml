@@ -10,4 +10,6 @@
     <dimen name="title_text_size">20sp</dimen>
     <dimen name="category_text_size">18sp</dimen>
     <dimen name="line_spacing_extra">5dp</dimen>
+    <dimen name="fab_default_elevation">5dp</dimen>
+    <dimen name="fab_default_border_width">0dp</dimen>
 </resources>

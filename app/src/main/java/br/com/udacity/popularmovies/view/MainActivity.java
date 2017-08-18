@@ -4,6 +4,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.os.Parcelable;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -13,22 +14,27 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.widget.Toast;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import br.com.udacity.popularmovies.R;
-import br.com.udacity.popularmovies.database.MovieContract;
 import br.com.udacity.popularmovies.model.Movie;
+import br.com.udacity.popularmovies.model.MoviesListResponse;
 import br.com.udacity.popularmovies.util.ItemClickListener;
 import br.com.udacity.popularmovies.util.tasks.AsyncTaskCallback;
 import br.com.udacity.popularmovies.util.Constants;
-import br.com.udacity.popularmovies.util.tasks.GetMoviesFromLocalDBAsyncTask;
-import br.com.udacity.popularmovies.util.tasks.GetMoviesFromTheMovieDBAsyncTask;
 import br.com.udacity.popularmovies.util.Utils;
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
+import br.com.udacity.popularmovies.service.MovieService;
 
 public class MainActivity extends AppCompatActivity implements AsyncTaskCallback {
 
+    private final String CURRENT_MOVIE_PAGE_KEY = "current_page";
+    private final String MOVIE_LIST_KEY = "movie_list";
     private final int NUM_MOVIES_PER_PAGE = 20;
 
     @BindView(R.id.grid_recycle_view)
@@ -40,6 +46,7 @@ public class MainActivity extends AppCompatActivity implements AsyncTaskCallback
     private GridLayoutManager mLayoutManager;
     private GridMoviesAdapter mAdapter;
     private ItemClickListener mListener;
+    private MovieService mService;
     private List<Movie> mMovies;
     private int mCurrentMoviePage; // the movie database page to load
     private boolean mLoadMoreMovies;
@@ -55,6 +62,8 @@ public class MainActivity extends AppCompatActivity implements AsyncTaskCallback
         if (getSupportActionBar() != null) {
             getSupportActionBar().setDisplayShowHomeEnabled(true);
         }
+
+        mService = new MovieService(this);
 
         mPreferences = getSharedPreferences(Constants.PREFS_NAME, Context.MODE_PRIVATE);
         mCurrentSortOption = mPreferences.getString(Constants.PREFERENCE_SORT_MOVIES, Constants.POPULAR_ENDPOINT );
@@ -89,17 +98,23 @@ public class MainActivity extends AppCompatActivity implements AsyncTaskCallback
         mLoadMoreMovies = false;
 
         if (!mCurrentSortOption.equals(Constants.FAVORITE_ENDPOINT)) {
-            runGetMoviesFromTheMovieDBTask();
+            if(savedInstanceState != null) {
+                mCurrentMoviePage = savedInstanceState.getInt(CURRENT_MOVIE_PAGE_KEY, 1);
+                mMovies = savedInstanceState.getParcelableArrayList(MOVIE_LIST_KEY);
+                refreshMoviesGrid();
+            } else {
+                runGetMoviesFromTheMovieDBTask();
+            }
         }
     }
 
     @Override
     protected void onResume() {
         super.onResume();
-        // Only the database needs to be updated on onResume, since it was keeping the movies
-        // even after thee user 'unfavorited' it on detail screen and pressed back
+        // Only the list from database needs to be updated on onResume, since it was keeping
+        // the movies even after thee user 'unfavorited' it on detail screen and pressed back
         if (mCurrentSortOption.equals(Constants.FAVORITE_ENDPOINT)) {
-            runGetMoviesFromLocalDBTask();
+            mService.getMoviesFromLocalDb(this);
         }
     }
 
@@ -107,18 +122,27 @@ public class MainActivity extends AppCompatActivity implements AsyncTaskCallback
         if (!Utils.isOnline(this)) {
             Toast.makeText(this, R.string.error_internet_connection, Toast.LENGTH_LONG).show();
         } else {
-            String params[] = {mCurrentSortOption, String.valueOf(mCurrentMoviePage)};
-            new GetMoviesFromTheMovieDBAsyncTask(this).execute(params);
+            Call<MoviesListResponse> call = mService.getMoviesFromWeb(mCurrentSortOption,
+                    String.valueOf(mCurrentMoviePage));
+
+            call.enqueue(new Callback<MoviesListResponse>() {
+                @Override
+                public void onResponse(Call<MoviesListResponse> call, Response<MoviesListResponse> response) {
+                    MoviesListResponse movieList = response.body();
+                    if (movieList != null) {
+                        receiveMovieListFromWeb(movieList.getMovies());
+                    }
+                }
+
+                @Override
+                public void onFailure(Call<MoviesListResponse> call, Throwable t) {
+                    t.printStackTrace();
+                }
+            });
         }
     }
 
-    private void runGetMoviesFromLocalDBTask() {
-        String params[] = {MovieContract.MovieEntry.CONTENT_URI.toString()};
-        new GetMoviesFromLocalDBAsyncTask(this, this).execute(params);
-    }
-
-    @Override
-    public void onAsyncTaskComplete(List<Movie> movies) {
+    public void receiveMovieListFromWeb(List<Movie> movies) {
         if (mLoadMoreMovies) {
             mMovies.addAll(movies);
             mAdapter.addItems(movies);
@@ -200,7 +224,7 @@ public class MainActivity extends AppCompatActivity implements AsyncTaskCallback
             case R.id.refresh_movies_item:
                 mCurrentMoviePage = 1; // reset the movie page that will be loaded
                 if (mCurrentSortOption.equals(Constants.FAVORITE_ENDPOINT)) {
-                    runGetMoviesFromLocalDBTask();
+                    mService.getMoviesFromLocalDb(this);
                 } else {
                     runGetMoviesFromTheMovieDBTask();
                 }
@@ -214,11 +238,25 @@ public class MainActivity extends AppCompatActivity implements AsyncTaskCallback
                     editor.apply();
 
                     mCurrentMoviePage = 1; // reset the movie page that will be loaded
-                    runGetMoviesFromLocalDBTask();
+                    mService.getMoviesFromLocalDb(this);
                 }
                 return true;
             default:
                 return super.onOptionsItemSelected(item);
         }
+    }
+
+    @Override
+    protected void onSaveInstanceState(Bundle outState) {
+        outState.putInt(CURRENT_MOVIE_PAGE_KEY, mCurrentMoviePage);
+        outState.putParcelableArrayList(MOVIE_LIST_KEY, new ArrayList<Parcelable>(mMovies));
+
+        super.onSaveInstanceState(outState);
+    }
+
+    @Override
+    public void onAsyncTaskComplete(List<Movie> movies) {
+        mMovies = movies;
+        refreshMoviesGrid();
     }
 }
