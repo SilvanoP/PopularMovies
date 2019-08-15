@@ -101,6 +101,7 @@ public class FilterDialog extends DialogFragment implements View.OnClickListener
                 }
             }
             listener.sort(selectedCategory);
+            dismiss();
         }
     }
 

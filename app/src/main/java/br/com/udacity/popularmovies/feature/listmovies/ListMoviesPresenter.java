@@ -25,12 +25,14 @@ public class ListMoviesPresenter extends BasePresenterImpl<ListMoviesContract.Vi
 
     @Override
     public void loadData() {
+        weakView.get().showProgress();
         disposable.add(repository.getMoviesFromCategory()
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new Consumer<List<Movie>>() {
                     @Override
                     public void accept(List<Movie> movies) {
+                        weakView.get().hideProgress();
                         weakView.get().refreshMovieList(movies);
                     }
                 })
@@ -58,6 +60,7 @@ public class ListMoviesPresenter extends BasePresenterImpl<ListMoviesContract.Vi
 
     @Override
     public void changeCategory(MovieCategory category) {
+        weakView.get().showProgress();
         repository.changeCategory(category);
         disposable.add(repository.getMoviesFromCategory()
                 .subscribeOn(Schedulers.io())
@@ -65,6 +68,7 @@ public class ListMoviesPresenter extends BasePresenterImpl<ListMoviesContract.Vi
                 .subscribe(new Consumer<List<Movie>>() {
                     @Override
                     public void accept(List<Movie> movies) {
+                        weakView.get().hideProgress();
                         weakView.get().refreshMovieList(movies);
                     }
                 })

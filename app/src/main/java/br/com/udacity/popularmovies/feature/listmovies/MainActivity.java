@@ -5,6 +5,8 @@ import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
+import android.view.View;
+import android.widget.ProgressBar;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
@@ -26,6 +28,7 @@ import dagger.android.AndroidInjection;
 public class MainActivity extends AppCompatActivity implements ListMoviesContract.View,
         FilterDialog.SortDialogListener, GridMoviesAdapter.GridAdapterClickListener {
 
+    private ProgressBar mProgressBar;
     private RecyclerView mGridRecycleView;
     private Toolbar mToolbar;
 
@@ -41,6 +44,7 @@ public class MainActivity extends AppCompatActivity implements ListMoviesContrac
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        mProgressBar = findViewById(R.id.grid_progress);
         mGridRecycleView = findViewById(R.id.grid_recycle_view);
         mToolbar = findViewById(R.id.main_toolbar);
 
@@ -69,6 +73,16 @@ public class MainActivity extends AppCompatActivity implements ListMoviesContrac
         });
 
         mAdapter = new GridMoviesAdapter(this, new ArrayList<Movie>(), this);
+    }
+
+    @Override
+    public void showProgress() {
+        mProgressBar.setVisibility(View.VISIBLE);
+    }
+
+    @Override
+    public void hideProgress() {
+        mProgressBar.setVisibility(View.GONE);
     }
 
     @Override

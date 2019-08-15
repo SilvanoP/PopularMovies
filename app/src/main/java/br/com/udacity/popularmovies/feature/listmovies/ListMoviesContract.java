@@ -10,6 +10,8 @@ import br.com.udacity.popularmovies.feature.shared.BaseView;
 public interface ListMoviesContract {
 
     interface View extends BaseView {
+        void showProgress();
+        void hideProgress();
         void refreshMovieList(List<Movie> movies);
         void addMovies(List<Movie> movies);
         void showSortDialog(MovieCategory category);
