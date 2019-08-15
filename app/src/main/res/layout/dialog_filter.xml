@@ -1,0 +1,124 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <TextView
+        android:id="@+id/dialogFilterTitle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_margin="@dimen/margin_default"
+        android:text="@string/category"
+        android:textColor="@android:color/black"
+        android:textSize="@dimen/text_size_category"
+        android:textStyle="bold"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <View
+        android:id="@+id/dialogFilterDivider"
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:layout_marginTop="@dimen/margin_default"
+        android:background="?android:attr/listDivider"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/dialogFilterTitle" />
+
+    <RadioGroup
+        android:id="@+id/dialogFilterRadioGroup"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/dialogFilterDivider">
+
+        <androidx.appcompat.widget.AppCompatRadioButton
+            android:id="@+id/dialogFilterPopularRadio"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_margin="@dimen/margin_radio_button"
+            android:paddingEnd="@dimen/radio_padding_default"
+            android:paddingStart="@dimen/radio_padding_default"
+            android:text="@string/sort_option_popular"
+            android:textSize="@dimen/text_size_radio_label" />
+
+        <androidx.appcompat.widget.AppCompatRadioButton
+            android:id="@+id/dialogFilterTopRatedRadio"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_margin="@dimen/margin_radio_button"
+            android:paddingEnd="@dimen/radio_padding_default"
+            android:paddingStart="@dimen/radio_padding_default"
+            android:text="@string/sort_option_top_rated"
+            android:textSize="@dimen/text_size_radio_label" />
+
+        <androidx.appcompat.widget.AppCompatRadioButton
+            android:id="@+id/dialogFilterUpcomingRadio"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_margin="@dimen/margin_radio_button"
+            android:paddingEnd="@dimen/radio_padding_default"
+            android:paddingStart="@dimen/radio_padding_default"
+            android:text="@string/sort_option_upcoming"
+            android:textSize="@dimen/text_size_radio_label" />
+
+        <androidx.appcompat.widget.AppCompatRadioButton
+            android:id="@+id/dialogFilterFavoriteRadio"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_margin="@dimen/margin_radio_button"
+            android:paddingEnd="@dimen/radio_padding_default"
+            android:paddingStart="@dimen/radio_padding_default"
+            android:text="@string/sort_option_favorites"
+            android:textSize="@dimen/text_size_radio_label" />
+    </RadioGroup>
+
+    <View
+        android:id="@+id/dialogFilterDividerButtons"
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="?android:attr/listDivider"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/dialogFilterRadioGroup"
+        tools:layout_editor_absoluteX="8dp"
+        tools:layout_editor_absoluteY="254dp" />
+
+    <Button
+        android:id="@+id/dialogFilterAcceptButton"
+        style="@style/Widget.AppCompat.Button.Borderless.Colored"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_margin="@dimen/margin_half"
+        android:enabled="false"
+        android:minHeight="@dimen/no_dp"
+        android:minWidth="@dimen/no_dp"
+        android:text="@string/accept"
+        android:textAllCaps="true"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_chainStyle="packed"
+        app:layout_constraintStart_toEndOf="@+id/dialogFilterCancelButton"
+        app:layout_constraintTop_toBottomOf="@+id/dialogFilterDividerButtons" />
+
+    <Button
+        android:id="@+id/dialogFilterCancelButton"
+        style="@style/Widget.AppCompat.Button.Borderless.Colored"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="@dimen/margin_half"
+        android:layout_marginTop="@dimen/margin_half"
+        android:minHeight="@dimen/no_dp"
+        android:minWidth="@dimen/no_dp"
+        android:text="@string/cancel"
+        android:textAllCaps="true"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toStartOf="@+id/dialogFilterAcceptButton"
+        app:layout_constraintHorizontal_bias="1"
+        app:layout_constraintHorizontal_chainStyle="packed"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/dialogFilterDividerButtons" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>

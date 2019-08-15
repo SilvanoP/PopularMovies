@@ -9,8 +9,8 @@
         android:id="@+id/trailer_thumbnail_image"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="@dimen/default_margin_value"
-        android:layout_marginEnd="@dimen/default_margin_value"
+        android:layout_marginStart="@dimen/margin_default"
+        android:layout_marginEnd="@dimen/margin_default"
         android:layout_gravity="center_vertical"
         tools:src="@mipmap/ic_launcher"/>
 
@@ -18,8 +18,8 @@
         android:id="@+id/trailer_name_text"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="@dimen/default_margin_value"
-        android:layout_marginEnd="@dimen/default_margin_value"
+        android:layout_marginStart="@dimen/margin_default"
+        android:layout_marginEnd="@dimen/margin_default"
         android:layout_gravity="center_vertical"
         tools:text="@string/trailers"/>
 

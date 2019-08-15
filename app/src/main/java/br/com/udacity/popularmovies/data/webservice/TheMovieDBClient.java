@@ -3,6 +3,7 @@ package br.com.udacity.popularmovies.data.webservice;
 import br.com.udacity.popularmovies.data.entities.remote.MoviesListResponse;
 import br.com.udacity.popularmovies.data.entities.remote.ReviewsListResponse;
 import br.com.udacity.popularmovies.data.entities.remote.VideosListResponse;
+import io.reactivex.Single;
 import retrofit2.Call;
 import retrofit2.http.GET;
 import retrofit2.http.Path;
@@ -11,27 +12,27 @@ import retrofit2.http.Query;
 public interface TheMovieDBClient {
 
     @GET("/3/movie/popular")
-    Call<MoviesListResponse> getPopularMovies(
+    Single<MoviesListResponse> getPopularMovies(
             @Query("api_key") String apiKey,
             @Query("page") int page
     );
     @GET("/3/movie/top_rated")
-    Call<MoviesListResponse> getTopRatedMovies(
+    Single<MoviesListResponse> getTopRatedMovies(
             @Query("api_key") String apiKey,
             @Query("page") int page
     );
     @GET("/3/movie/upcoming")
-    Call<MoviesListResponse> getUpcomingMovies(
+    Single<MoviesListResponse> getUpcomingMovies(
             @Query("api_key") String apiKey,
             @Query("page") int page
     );
     @GET("/3/movie/{movie_id}/reviews")
-    Call<ReviewsListResponse> getReviews(
+    Single<ReviewsListResponse> getReviews(
             @Path("movie_id") String movieId,
             @Query("api_key") String apiKey
     );
     @GET("/3/movie/{movie_id}/videos")
-    Call<VideosListResponse> getVideos(
+    Single<VideosListResponse> getVideos(
             @Path("movie_id") String movieId,
             @Query("api_key") String apiKey
     );

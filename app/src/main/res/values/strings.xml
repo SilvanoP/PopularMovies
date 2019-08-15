@@ -13,10 +13,14 @@
     </string-array>
     <string name="sort_option_popular">Popular</string>
     <string name="sort_option_top_rated">Top Rated</string>
+    <string name="sort_option_upcoming">Upcoming</string>
     <string name="sort_option_favorites">Favorites</string>
 
     <string name="ok">OK</string>
 
+    <string name="accept">Accept</string>
+    <string name="cancel">Cancel</string>
+    <string name="category">Category</string>
     <string name="title">Title</string>
     <string name="original_title">Original Title</string>
     <string name="release_date">Release Date</string>

@@ -8,8 +8,10 @@ import androidx.room.Room;
 import javax.inject.Singleton;
 
 import br.com.udacity.popularmovies.data.database.PopularMoviesDatabase;
+import br.com.udacity.popularmovies.data.repository.MoviesRepositoryImpl;
 import br.com.udacity.popularmovies.data.webservice.CacheInterceptor;
 import br.com.udacity.popularmovies.data.webservice.TheMovieDBClient;
+import br.com.udacity.popularmovies.feature.shared.MoviesRepository;
 import br.com.udacity.popularmovies.util.Constants;
 import dagger.Module;
 import dagger.Provides;
@@ -62,5 +64,11 @@ public class DataModule {
     @Singleton
     SharedPreferences providesSharedPreferences(Context context) {
         return context.getSharedPreferences(Constants.PREFS_NAME, Context.MODE_PRIVATE);
+    }
+
+    @Provides
+    @Singleton
+    MoviesRepository providesMoviesRepository(MoviesRepositoryImpl repository) {
+        return repository;
     }
 }

@@ -29,7 +29,7 @@ public class GridMoviesAdapter extends RecyclerView.Adapter<GridMoviesAdapter.Gr
     private Context mContext;
     private List<Movie> mMovies;
 
-    public GridMoviesAdapter(Context context, List<Movie> movies, ItemClickListener listener) {
+    GridMoviesAdapter(Context context, List<Movie> movies, ItemClickListener listener) {
         mContext = context;
         mOnClickListener = listener;
         this.mMovies = movies;
@@ -54,13 +54,13 @@ public class GridMoviesAdapter extends RecyclerView.Adapter<GridMoviesAdapter.Gr
         return mMovies.size();
     }
 
-    public void addItems(List<Movie> newMovies) {
+    void addItems(List<Movie> newMovies) {
         int startPos = mMovies.size();
         mMovies.addAll(newMovies);
         this.notifyItemRangeInserted(startPos, newMovies.size());
     }
 
-    public void swapItems(List<Movie> newMovies) {
+    void swapItems(List<Movie> newMovies) {
         mMovies.clear();
         mMovies = newMovies;
         this.notifyDataSetChanged();
@@ -98,7 +98,7 @@ public class GridMoviesAdapter extends RecyclerView.Adapter<GridMoviesAdapter.Gr
         @Override
         public void onClick(View view) {
             int clickedPosition = getAdapterPosition();
-            mOnClickListener.onItemClick(clickedPosition);
+            mOnClickListener.onItemClick(mMovies.get(clickedPosition));
         }
     }
 }
