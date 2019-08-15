@@ -1,29 +1,32 @@
-package br.com.udacity.popularmovies.view;
+package br.com.udacity.popularmovies.feature.listmovies;
 
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.os.Parcelable;
-import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.GridLayoutManager;
-import android.support.v7.widget.RecyclerView;
-import android.support.v7.widget.Toolbar;
+import android.support.annotation.NonNull;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.widget.Toast;
 
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
+import androidx.recyclerview.widget.GridLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
+
 import java.util.ArrayList;
 import java.util.List;
 
 import br.com.udacity.popularmovies.R;
-import br.com.udacity.popularmovies.model.Movie;
-import br.com.udacity.popularmovies.model.MoviesListResponse;
+import br.com.udacity.popularmovies.data.entities.Movie;
+import br.com.udacity.popularmovies.data.entities.remote.MoviesListResponse;
 import br.com.udacity.popularmovies.util.ItemClickListener;
 import br.com.udacity.popularmovies.util.tasks.AsyncTaskCallback;
 import br.com.udacity.popularmovies.util.Constants;
 import br.com.udacity.popularmovies.util.Utils;
+import br.com.udacity.popularmovies.view.MovieDetailActivity;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import retrofit2.Call;
@@ -31,7 +34,7 @@ import retrofit2.Callback;
 import retrofit2.Response;
 import br.com.udacity.popularmovies.service.MovieService;
 
-public class MainActivity extends AppCompatActivity implements AsyncTaskCallback {
+public class MainActivity extends AppCompatActivity implements AsyncTaskCallback, ListMoviesContract.View {
 
     private final String CURRENT_MOVIE_PAGE_KEY = "current_page";
     private final String MOVIE_LIST_KEY = "movie_list";
@@ -73,7 +76,7 @@ public class MainActivity extends AppCompatActivity implements AsyncTaskCallback
         mGridRecycleView.setLayoutManager(mLayoutManager);
         mGridRecycleView.addOnScrollListener(new RecyclerView.OnScrollListener() {
             @Override
-            public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
+            public void onScrolled(@NonNull RecyclerView recyclerView, int dx, int dy) {
                 super.onScrolled(recyclerView, dx, dy);
                 int last = mLayoutManager.findLastVisibleItemPosition();
                 if (last >= ((NUM_MOVIES_PER_PAGE-1) * mCurrentMoviePage)) {
@@ -116,6 +119,16 @@ public class MainActivity extends AppCompatActivity implements AsyncTaskCallback
         if (mCurrentSortOption.equals(Constants.FAVORITE_ENDPOINT)) {
             mService.getMoviesFromLocalDb(this);
         }
+    }
+
+    @Override
+    public void refreshMovieList(List<Movie> movies) {
+
+    }
+
+    @Override
+    public void goToMovieDetail() {
+
     }
 
     private void runGetMoviesFromTheMovieDBTask() {

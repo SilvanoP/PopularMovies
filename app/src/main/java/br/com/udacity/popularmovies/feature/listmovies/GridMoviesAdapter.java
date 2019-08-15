@@ -1,7 +1,7 @@
-package br.com.udacity.popularmovies.view;
+package br.com.udacity.popularmovies.feature.listmovies;
 
 import android.content.Context;
-import android.support.v7.widget.RecyclerView;
+import android.support.annotation.NonNull;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -9,12 +9,14 @@ import android.widget.ImageView;
 import android.widget.RatingBar;
 import android.widget.TextView;
 
+import androidx.recyclerview.widget.RecyclerView;
+
 import com.squareup.picasso.Picasso;
 
 import java.util.List;
 
 import br.com.udacity.popularmovies.R;
-import br.com.udacity.popularmovies.model.Movie;
+import br.com.udacity.popularmovies.data.entities.Movie;
 import br.com.udacity.popularmovies.util.Constants;
 import br.com.udacity.popularmovies.util.ItemClickListener;
 import butterknife.BindView;
@@ -34,14 +36,15 @@ public class GridMoviesAdapter extends RecyclerView.Adapter<GridMoviesAdapter.Gr
     }
 
     @Override
-    public GridMoviesViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+    @NonNull
+    public GridMoviesViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         LayoutInflater inflater = LayoutInflater.from(mContext);
         View view = inflater.inflate(R.layout.movies_grid_item, parent, false);
         return  new GridMoviesViewHolder(view);
     }
 
     @Override
-    public void onBindViewHolder(GridMoviesViewHolder holder, int position) {
+    public void onBindViewHolder(@NonNull GridMoviesViewHolder holder, int position) {
         Movie movie = mMovies.get(position);
         holder.bind(movie);
     }
@@ -72,7 +75,7 @@ public class GridMoviesAdapter extends RecyclerView.Adapter<GridMoviesAdapter.Gr
         @BindView(R.id.movie_score_rating)
         RatingBar movieRatingBar;
 
-        public GridMoviesViewHolder(View v) {
+        GridMoviesViewHolder(View v) {
             super(v);
             v.setOnClickListener(this);
 
@@ -82,7 +85,7 @@ public class GridMoviesAdapter extends RecyclerView.Adapter<GridMoviesAdapter.Gr
         void bind(Movie movie) {
             String url = Constants.IMAGE_BASE_URL + Constants.POSTER_SMALL_SIZE + movie.getPosterUrl();
 
-            Picasso.with(mContext).load(url)
+            Picasso.get().load(url)
                     .placeholder(R.drawable.error_loading_image)
                     .error(R.drawable.error_loading_image)
                     .into(posterImageView);

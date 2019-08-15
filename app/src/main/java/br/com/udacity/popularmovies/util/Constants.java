@@ -13,4 +13,8 @@ public final class Constants {
     public static final String FAVORITE_ENDPOINT = "favorites";
 
     public static final String INTENT_EXTRA_MOVIE = "EXTRA_MOVIE";
+
+    public final class Database {
+        public static final String NAME = "popular_movies";
+    }
 }

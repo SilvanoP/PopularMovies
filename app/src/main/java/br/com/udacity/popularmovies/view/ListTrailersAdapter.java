@@ -1,19 +1,20 @@
 package br.com.udacity.popularmovies.view;
 
 import android.content.Context;
-import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import androidx.recyclerview.widget.RecyclerView;
+
 import com.squareup.picasso.Picasso;
 
 import java.util.List;
 
 import br.com.udacity.popularmovies.R;
-import br.com.udacity.popularmovies.model.Video;
+import br.com.udacity.popularmovies.data.entities.Video;
 import br.com.udacity.popularmovies.util.ItemClickListener;
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -67,7 +68,7 @@ public class ListTrailersAdapter extends RecyclerView.Adapter<ListTrailersAdapte
         void bind(Video video) {
             String key = video.getKey();
             String url = YOUTUBE_BASE_URL + key + mContext.getResources().getString(R.string.youtube_thumb_endpoint);
-            Picasso.with(mContext).load(url)
+            Picasso.get().load(url)
                     .placeholder(R.drawable.error_loading_image)
                     .error(R.drawable.error_loading_image)
                     .into(thumbnailImage);

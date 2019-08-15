@@ -1,26 +1,38 @@
-package br.com.udacity.popularmovies.model;
+package br.com.udacity.popularmovies.data.entities;
 
 import android.os.Parcel;
 import android.os.Parcelable;
 
+import androidx.room.ColumnInfo;
+import androidx.room.Entity;
+import androidx.room.PrimaryKey;
+
 import com.google.gson.annotations.SerializedName;
 import java.util.Date;
 
+@Entity
 public class Movie implements Parcelable {
 
+    @PrimaryKey
     private Long id;
     @SerializedName("poster_path")
+    @ColumnInfo(name = "poster_path")
     private String posterUrl;
     @SerializedName("backdrop_path")
+    @ColumnInfo(name = "backdrop_path")
     private String backdropUrl;
     @SerializedName("title")
+    @ColumnInfo(name = "title")
     private String name;
     @SerializedName("original_title")
+    @ColumnInfo(name = "original_title")
     private String originalName;
     @SerializedName("vote_average")
+    @ColumnInfo(name = "vote_average")
     private Float voteAverage;
     private String overview;
     @SerializedName("release_date")
+    @ColumnInfo(name = "release_date")
     private Date releaseDate;
     private transient boolean isFavorite;
 

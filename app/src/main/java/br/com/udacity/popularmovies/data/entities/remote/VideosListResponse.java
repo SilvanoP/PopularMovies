@@ -1,13 +1,11 @@
-package br.com.udacity.popularmovies.model;
+package br.com.udacity.popularmovies.data.entities.remote;
 
 import com.google.gson.annotations.SerializedName;
 
 import java.util.ArrayList;
 import java.util.List;
 
-/**
- * Created by Silvano Damasceno on 15/08/2017.
- */
+import br.com.udacity.popularmovies.data.entities.Video;
 
 public class VideosListResponse {
 

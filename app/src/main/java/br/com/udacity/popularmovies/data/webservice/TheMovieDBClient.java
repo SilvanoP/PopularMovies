@@ -1,8 +1,8 @@
-package br.com.udacity.popularmovies.util;
+package br.com.udacity.popularmovies.data.webservice;
 
-import br.com.udacity.popularmovies.model.MoviesListResponse;
-import br.com.udacity.popularmovies.model.ReviewsListResponse;
-import br.com.udacity.popularmovies.model.VideosListResponse;
+import br.com.udacity.popularmovies.data.entities.remote.MoviesListResponse;
+import br.com.udacity.popularmovies.data.entities.remote.ReviewsListResponse;
+import br.com.udacity.popularmovies.data.entities.remote.VideosListResponse;
 import retrofit2.Call;
 import retrofit2.http.GET;
 import retrofit2.http.Path;
@@ -17,6 +17,11 @@ public interface TheMovieDBClient {
     );
     @GET("/3/movie/top_rated")
     Call<MoviesListResponse> getTopRatedMovies(
+            @Query("api_key") String apiKey,
+            @Query("page") int page
+    );
+    @GET("/3/movie/upcoming")
+    Call<MoviesListResponse> getUpcomingMovies(
             @Query("api_key") String apiKey,
             @Query("page") int page
     );

@@ -19,11 +19,11 @@ import java.util.ArrayList;
 import java.util.List;
 
 import br.com.udacity.popularmovies.R;
-import br.com.udacity.popularmovies.model.Movie;
-import br.com.udacity.popularmovies.model.Review;
-import br.com.udacity.popularmovies.model.ReviewsListResponse;
-import br.com.udacity.popularmovies.model.Video;
-import br.com.udacity.popularmovies.model.VideosListResponse;
+import br.com.udacity.popularmovies.data.entities.Movie;
+import br.com.udacity.popularmovies.data.entities.Review;
+import br.com.udacity.popularmovies.data.entities.remote.ReviewsListResponse;
+import br.com.udacity.popularmovies.data.entities.Video;
+import br.com.udacity.popularmovies.data.entities.remote.VideosListResponse;
 import br.com.udacity.popularmovies.util.Constants;
 import br.com.udacity.popularmovies.util.ItemClickListener;
 import br.com.udacity.popularmovies.util.Utils;

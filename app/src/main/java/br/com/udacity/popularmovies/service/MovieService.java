@@ -11,12 +11,12 @@ import com.google.gson.GsonBuilder;
 
 import br.com.udacity.popularmovies.BuildConfig;
 import br.com.udacity.popularmovies.database.MovieContract;
-import br.com.udacity.popularmovies.model.Movie;
-import br.com.udacity.popularmovies.model.MoviesListResponse;
-import br.com.udacity.popularmovies.model.ReviewsListResponse;
-import br.com.udacity.popularmovies.model.VideosListResponse;
+import br.com.udacity.popularmovies.data.entities.Movie;
+import br.com.udacity.popularmovies.data.entities.remote.MoviesListResponse;
+import br.com.udacity.popularmovies.data.entities.remote.ReviewsListResponse;
+import br.com.udacity.popularmovies.data.entities.remote.VideosListResponse;
 import br.com.udacity.popularmovies.util.Constants;
-import br.com.udacity.popularmovies.util.TheMovieDBClient;
+import br.com.udacity.popularmovies.data.webservice.TheMovieDBClient;
 import br.com.udacity.popularmovies.util.Utils;
 import br.com.udacity.popularmovies.util.tasks.AsyncTaskCallback;
 import br.com.udacity.popularmovies.util.tasks.GetMoviesFromLocalDBAsyncTask;

@@ -2,7 +2,7 @@ package br.com.udacity.popularmovies.util.tasks;
 
 import java.util.List;
 
-import br.com.udacity.popularmovies.model.Movie;
+import br.com.udacity.popularmovies.data.entities.Movie;
 
 public interface AsyncTaskCallback {
 

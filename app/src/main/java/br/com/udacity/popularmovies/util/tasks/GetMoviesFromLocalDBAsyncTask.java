@@ -12,7 +12,7 @@ import java.util.Date;
 import java.util.List;
 
 import br.com.udacity.popularmovies.database.MovieContract;
-import br.com.udacity.popularmovies.model.Movie;
+import br.com.udacity.popularmovies.data.entities.Movie;
 
 public class GetMoviesFromLocalDBAsyncTask extends AsyncTask<String, Integer, List<Movie>> {
 

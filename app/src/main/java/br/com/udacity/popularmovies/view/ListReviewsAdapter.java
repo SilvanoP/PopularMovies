@@ -10,8 +10,7 @@ import android.widget.TextView;
 import java.util.List;
 
 import br.com.udacity.popularmovies.R;
-import br.com.udacity.popularmovies.model.Review;
-import br.com.udacity.popularmovies.util.ItemClickListener;
+import br.com.udacity.popularmovies.data.entities.Review;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
