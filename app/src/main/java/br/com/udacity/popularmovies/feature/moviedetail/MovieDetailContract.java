@@ -11,6 +11,7 @@ public interface MovieDetailContract {
 
     interface View extends BaseView {
         void showBackdropImage(String backdropUrl);
+        void showFloatingButton(boolean isFavorited);
         void showPosterImage(String posterUrl);
         void showTitle(String title);
         void showOriginalName(String originalName);
@@ -23,7 +24,6 @@ public interface MovieDetailContract {
         void showReviews();
         void hideReviews();
         void refreshReviews(List<Review> reviews);
-        void changeFavoriteIcon(boolean isFavorited);
         void goToYoutube(String youtubeUrl);
     }
 

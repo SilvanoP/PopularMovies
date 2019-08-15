@@ -23,8 +23,10 @@ import br.com.udacity.popularmovies.data.webservice.TheMovieDBService;
 import br.com.udacity.popularmovies.feature.shared.MoviesRepository;
 import br.com.udacity.popularmovies.util.Constants;
 import br.com.udacity.popularmovies.util.Utils;
+import io.reactivex.Maybe;
 import io.reactivex.Single;
 import io.reactivex.SingleSource;
+import io.reactivex.functions.Consumer;
 import io.reactivex.functions.Function;
 
 public class MoviesRepositoryImpl implements MoviesRepository {
@@ -146,7 +148,13 @@ public class MoviesRepositoryImpl implements MoviesRepository {
     }
 
     @Override
+    public Maybe<Movie> isFavorite() {
+        return database.movieDAO().findById(selectedMovie.getId());
+    }
+
+    @Override
     public Single<List<Video>> getTrailers() {
+        interceptor.setOnline(Utils.isOnline(context));
         return client.getVideos(String.valueOf(selectedMovie.getId()), tmdbApi)
                 .flatMap(new Function<VideosListResponse, SingleSource<? extends List<Video>>>() {
                     @Override
@@ -159,6 +167,7 @@ public class MoviesRepositoryImpl implements MoviesRepository {
 
     @Override
     public Single<List<Review>> getReviews() {
+        interceptor.setOnline(Utils.isOnline(context));
         return client.getReviews(String.valueOf(selectedMovie.getId()), tmdbApi)
                 .flatMap(new Function<ReviewsListResponse, SingleSource<? extends List<Review>>>() {
                     @Override

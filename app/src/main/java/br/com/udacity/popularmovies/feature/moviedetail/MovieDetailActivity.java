@@ -105,6 +105,15 @@ public class MovieDetailActivity extends AppCompatActivity implements MovieDetai
     }
 
     @Override
+    public void showFloatingButton(boolean isFavorited) {
+        if (isFavorited) {
+            mIsFavoriteButton.setImageResource(R.drawable.ic_is_favorite);
+        } else {
+            mIsFavoriteButton.setImageResource(R.drawable.ic_not_favorite);
+        }
+    }
+
+    @Override
     public void showPosterImage(String posterUrl) {
         String imageSize = "w" + (getResources().getInteger(R.integer.movie_detail_poster_size));
         String posterFullUrl = Constants.IMAGE_BASE_URL + imageSize + posterUrl;
@@ -177,15 +186,6 @@ public class MovieDetailActivity extends AppCompatActivity implements MovieDetai
     public void refreshReviews(List<Review> reviews) {
         ListReviewsAdapter reviewAdapter = new ListReviewsAdapter(this, reviews);
         mReviewsRecyclerView.setAdapter(reviewAdapter);
-    }
-
-    @Override
-    public void changeFavoriteIcon(boolean isFavorited) {
-        if (isFavorited) {
-            mIsFavoriteButton.setImageResource(R.drawable.ic_is_favorite);
-        } else {
-            mIsFavoriteButton.setImageResource(R.drawable.ic_not_favorite);
-        }
     }
 
     @Override

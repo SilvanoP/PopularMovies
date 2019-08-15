@@ -35,6 +35,25 @@ public class MovieDetailPresenter extends BasePresenterImpl<MovieDetailContract.
         weakView.get().showReleaseDate(Utils.dateToString(movie.getReleaseDate(),"MM/dd/yyyy"));
         weakView.get().showRating(movie.getVoteAverage());
         weakView.get().showOverview(movie.getOverview());
+        disposable.add(repository.isFavorite()
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new Consumer<Movie>() {
+                    @Override
+                    public void accept(Movie movie) {
+                        weakView.get().showFloatingButton(true);
+                    }
+                }, new Consumer<Throwable>() {
+                    @Override
+                    public void accept(Throwable throwable) throws Exception {
+                        throwable.printStackTrace();
+                    }
+                }, new Action() {
+                    @Override
+                    public void run() {
+                        weakView.get().showFloatingButton(false);
+                    }
+                }));
         disposable.add(repository.getTrailers()
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
@@ -73,7 +92,7 @@ public class MovieDetailPresenter extends BasePresenterImpl<MovieDetailContract.
                 .subscribe(new Consumer<Boolean>() {
                                @Override
                                public void accept(Boolean aBoolean) {
-                                   weakView.get().changeFavoriteIcon(aBoolean);
+                                   weakView.get().showFloatingButton(aBoolean);
                                }
                            }));
     }
