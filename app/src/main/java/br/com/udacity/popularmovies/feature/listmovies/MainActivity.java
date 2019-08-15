@@ -20,13 +20,12 @@ import javax.inject.Inject;
 import br.com.udacity.popularmovies.R;
 import br.com.udacity.popularmovies.data.entities.Movie;
 import br.com.udacity.popularmovies.data.entities.MovieCategory;
-import br.com.udacity.popularmovies.util.ItemClickListener;
-import br.com.udacity.popularmovies.view.MovieDetailActivity;
+import br.com.udacity.popularmovies.feature.moviedetail.MovieDetailActivity;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
 public class MainActivity extends AppCompatActivity implements ListMoviesContract.View,
-        FilterDialog.SortDialogListener {
+        FilterDialog.SortDialogListener, GridMoviesAdapter.GridAdapterClickListener {
 
 
     @BindView(R.id.grid_recycle_view)
@@ -71,14 +70,12 @@ public class MainActivity extends AppCompatActivity implements ListMoviesContrac
             }
         });
 
-        ItemClickListener listener = new ItemClickListener(){
-            @Override
-            public void onItemClick(Movie movie) {
-                presenter.onMovieSelected(movie);
-            }
-        };
+        mAdapter = new GridMoviesAdapter(this, new ArrayList<Movie>(), this);
+    }
 
-        mAdapter = new GridMoviesAdapter(this, new ArrayList<Movie>(), listener);
+    @Override
+    public void onItemClick(Movie movie) {
+        presenter.onMovieSelected(movie);
     }
 
     @Override
@@ -129,6 +126,5 @@ public class MainActivity extends AppCompatActivity implements ListMoviesContrac
                 return super.onOptionsItemSelected(item);
         }
     }
-
 
 }

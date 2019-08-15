@@ -9,7 +9,7 @@ import retrofit2.http.GET;
 import retrofit2.http.Path;
 import retrofit2.http.Query;
 
-public interface TheMovieDBClient {
+public interface TheMovieDBService {
 
     @GET("/3/movie/popular")
     Single<MoviesListResponse> getPopularMovies(

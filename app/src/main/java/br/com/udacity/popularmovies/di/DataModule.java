@@ -10,7 +10,7 @@ import javax.inject.Singleton;
 import br.com.udacity.popularmovies.data.database.PopularMoviesDatabase;
 import br.com.udacity.popularmovies.data.repository.MoviesRepositoryImpl;
 import br.com.udacity.popularmovies.data.webservice.CacheInterceptor;
-import br.com.udacity.popularmovies.data.webservice.TheMovieDBClient;
+import br.com.udacity.popularmovies.data.webservice.TheMovieDBService;
 import br.com.udacity.popularmovies.feature.shared.MoviesRepository;
 import br.com.udacity.popularmovies.util.Constants;
 import dagger.Module;
@@ -43,14 +43,14 @@ public class DataModule {
 
     @Provides
     @Singleton
-    TheMovieDBClient providesTheMovieDBClient(OkHttpClient client) {
+    TheMovieDBService providesTheMovieDBClient(OkHttpClient client) {
         return new Retrofit.Builder()
                 .baseUrl(Constants.MOVIES_BASE_URL)
                 .addConverterFactory(GsonConverterFactory.create())
                 .addCallAdapterFactory(RxJava2CallAdapterFactory.create())
                 .client(client)
                 .build()
-                .create(TheMovieDBClient.class);
+                .create(TheMovieDBService.class);
     }
 
     @Provides

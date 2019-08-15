@@ -19,6 +19,7 @@ public class ListMoviesPresenter extends BasePresenterImpl<ListMoviesContract.Vi
 
     @Inject
     ListMoviesPresenter(MoviesRepository repository) {
+        super();
         this.repository = repository;
     }
 

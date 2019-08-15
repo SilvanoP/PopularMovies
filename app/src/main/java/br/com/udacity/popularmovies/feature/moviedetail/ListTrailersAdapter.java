@@ -1,6 +1,7 @@
-package br.com.udacity.popularmovies.view;
+package br.com.udacity.popularmovies.feature.moviedetail;
 
 import android.content.Context;
+import android.support.annotation.NonNull;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -22,20 +23,21 @@ import butterknife.ButterKnife;
 
 public class ListTrailersAdapter extends RecyclerView.Adapter<ListTrailersAdapter.ListTrailerViewHolder> {
 
-    private final String YOUTUBE_BASE_URL = "http://img.youtube.com/vi/";
+    private static final String YOUTUBE_BASE_URL = "http://img.youtube.com/vi/";
     private final ItemClickListener mListener;
 
     private Context mContext;
     private List<Video> mTrailers;
 
-    public ListTrailersAdapter(Context context, List<Video> trailers, ItemClickListener listener) {
+    ListTrailersAdapter(Context context, List<Video> trailers, ItemClickListener listener) {
         mContext = context;
         mTrailers = trailers;
         mListener = listener;
     }
 
     @Override
-    public ListTrailerViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+    @NonNull
+    public ListTrailerViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         LayoutInflater inflater = LayoutInflater.from(mContext);
         View view = inflater.inflate(R.layout.trailers_list_item, parent, false);
 
@@ -43,7 +45,7 @@ public class ListTrailersAdapter extends RecyclerView.Adapter<ListTrailersAdapte
     }
 
     @Override
-    public void onBindViewHolder(ListTrailerViewHolder holder, int position) {
+    public void onBindViewHolder(@NonNull ListTrailerViewHolder holder, int position) {
         Video trailer = mTrailers.get(position);
         holder.bind(trailer);
     }
@@ -59,7 +61,7 @@ public class ListTrailersAdapter extends RecyclerView.Adapter<ListTrailersAdapte
         @BindView(R.id.trailer_name_text)
         TextView nameTextView;
 
-        public ListTrailerViewHolder(View view) {
+        ListTrailerViewHolder(View view) {
             super(view);
             view.setOnClickListener(this);
             ButterKnife.bind(this, view);

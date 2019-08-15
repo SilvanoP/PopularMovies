@@ -3,7 +3,7 @@ package br.com.udacity.popularmovies.di;
 import br.com.udacity.popularmovies.feature.listmovies.ListMoviesModule;
 import br.com.udacity.popularmovies.feature.listmovies.MainActivity;
 import br.com.udacity.popularmovies.feature.moviedetail.MovieDetailModule;
-import br.com.udacity.popularmovies.view.MovieDetailActivity;
+import br.com.udacity.popularmovies.feature.moviedetail.MovieDetailActivity;
 import dagger.Module;
 import dagger.android.AndroidInjectionModule;
 import dagger.android.ContributesAndroidInjector;

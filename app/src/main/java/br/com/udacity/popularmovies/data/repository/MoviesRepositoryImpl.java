@@ -5,6 +5,7 @@ import android.content.SharedPreferences;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.Callable;
 
 import javax.inject.Inject;
 
@@ -12,9 +13,11 @@ import br.com.udacity.popularmovies.BuildConfig;
 import br.com.udacity.popularmovies.data.database.PopularMoviesDatabase;
 import br.com.udacity.popularmovies.data.entities.Movie;
 import br.com.udacity.popularmovies.data.entities.MovieCategory;
+import br.com.udacity.popularmovies.data.entities.Review;
+import br.com.udacity.popularmovies.data.entities.Video;
 import br.com.udacity.popularmovies.data.entities.remote.MoviesListResponse;
 import br.com.udacity.popularmovies.data.webservice.CacheInterceptor;
-import br.com.udacity.popularmovies.data.webservice.TheMovieDBClient;
+import br.com.udacity.popularmovies.data.webservice.TheMovieDBService;
 import br.com.udacity.popularmovies.feature.shared.MoviesRepository;
 import br.com.udacity.popularmovies.util.Constants;
 import br.com.udacity.popularmovies.util.Utils;
@@ -24,21 +27,23 @@ import io.reactivex.functions.Function;
 
 public class MoviesRepositoryImpl implements MoviesRepository {
 
-    private final int NUM_MOVIES_PER_PAGE = 20;
+    private static final int NUM_MOVIES_PER_PAGE = 20;
+    private static final String YOUTUBE_BASE_URL = "https://www.youtube.com/watch?v=";
 
     private Context context;
     private CacheInterceptor interceptor;
     private SharedPreferences preferences;
-    private TheMovieDBClient client;
+    private TheMovieDBService client;
     private PopularMoviesDatabase database;
     private String tmdbApi;
 
     private MovieCategory currentCategory;
     private int currentPage;
     private Movie selectedMovie;
+    private List<Video> movieTrailers;
 
     @Inject
-    public MoviesRepositoryImpl(Context context, SharedPreferences preferences, TheMovieDBClient client,
+    public MoviesRepositoryImpl(Context context, SharedPreferences preferences, TheMovieDBService client,
                                 PopularMoviesDatabase database, CacheInterceptor interceptor) {
         this.context = context;
         this.interceptor = interceptor;
@@ -137,5 +142,47 @@ public class MoviesRepositoryImpl implements MoviesRepository {
 
     public Movie getSelectedMovie() {
         return selectedMovie;
+    }
+
+    @Override
+    public Single<List<Video>> getTrailers() {
+        return null;
+    }
+
+    @Override
+    public Single<List<Review>> getReviews() {
+        return null;
+    }
+
+    @Override
+    public Single<Boolean> changeFavoriteState() {
+        if (selectedMovie.isFavorite()) {
+            return Single.fromCallable(new Callable<Boolean>() {
+                @Override
+                public Boolean call()  {
+                    database.movieDAO().delete(selectedMovie);
+                    selectedMovie.setFavorite(false);
+                    return false;
+                }
+            });
+        }
+
+        return Single.fromCallable(new Callable<Boolean>() {
+            @Override
+            public Boolean call()  {
+                selectedMovie.setFavorite(true);
+                database.movieDAO().insert(selectedMovie);
+                return true;
+            }
+        });
+    }
+
+    @Override
+    public String getTrailerUrl(int position) {
+        if (movieTrailers != null && movieTrailers.size() > position) {
+            return YOUTUBE_BASE_URL + movieTrailers.get(position).getKey();
+        }
+
+        return "";
     }
 }

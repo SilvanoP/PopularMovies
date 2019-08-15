@@ -22,14 +22,9 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".view.MovieDetailActivity"
+        <activity android:name=".feature.moviedetail.MovieDetailActivity"
             android:theme="@style/movieDetailStyle">
         </activity>
-
-        <provider
-            android:authorities="br.com.udacity.popularmovies"
-            android:name=".database.PopularMoviesContentProvider"
-            android:exported="false"/>
     </application>
 
 </manifest>

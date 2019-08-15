@@ -6,6 +6,7 @@ import android.net.NetworkInfo;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.Locale;
 
 public class Utils {
 
@@ -13,7 +14,7 @@ public class Utils {
         ConnectivityManager cm =
                 (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
         NetworkInfo netInfo = cm.getActiveNetworkInfo();
-        return netInfo != null && netInfo.isConnectedOrConnecting();
+        return netInfo != null && netInfo.isConnected();
     }
 
     public static String dateToString(Date date) {
@@ -22,7 +23,7 @@ public class Utils {
     }
 
     public static String dateToString(Date date, String mask) {
-        return new SimpleDateFormat(mask).format(date);
+        return new SimpleDateFormat(mask, Locale.getDefault()).format(date);
     }
 
 }

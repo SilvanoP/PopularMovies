@@ -5,6 +5,7 @@ import android.app.Application;
 
 import javax.inject.Inject;
 
+import br.com.udacity.popularmovies.di.DaggerPopularMoviesComponent;
 import dagger.android.DispatchingAndroidInjector;
 import dagger.android.HasActivityInjector;
 

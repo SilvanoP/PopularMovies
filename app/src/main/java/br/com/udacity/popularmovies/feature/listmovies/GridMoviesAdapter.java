@@ -24,12 +24,12 @@ import butterknife.ButterKnife;
 
 public class GridMoviesAdapter extends RecyclerView.Adapter<GridMoviesAdapter.GridMoviesViewHolder> {
 
-    private final ItemClickListener mOnClickListener;
+    private final GridAdapterClickListener mOnClickListener;
 
     private Context mContext;
     private List<Movie> mMovies;
 
-    GridMoviesAdapter(Context context, List<Movie> movies, ItemClickListener listener) {
+    GridMoviesAdapter(Context context, List<Movie> movies, GridAdapterClickListener listener) {
         mContext = context;
         mOnClickListener = listener;
         this.mMovies = movies;
@@ -100,5 +100,9 @@ public class GridMoviesAdapter extends RecyclerView.Adapter<GridMoviesAdapter.Gr
             int clickedPosition = getAdapterPosition();
             mOnClickListener.onItemClick(mMovies.get(clickedPosition));
         }
+    }
+
+    interface GridAdapterClickListener {
+        void onItemClick(Movie movie);
     }
 }
