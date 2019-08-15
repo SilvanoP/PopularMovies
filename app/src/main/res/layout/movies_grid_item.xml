@@ -6,20 +6,20 @@
     android:orientation="vertical"
     android:gravity="center_horizontal">
 
-    <android.support.v7.widget.AppCompatImageView
+    <ImageView
         android:id="@+id/movie_poster_image"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:adjustViewBounds="true"/>
 
-    <android.support.v7.widget.AppCompatTextView
+    <TextView
         android:id="@+id/movie_name_text"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:maxLines="1"
         android:ellipsize="end"/>
 
-    <android.support.v7.widget.AppCompatRatingBar
+    <androidx.appcompat.widget.AppCompatRatingBar
         android:id="@+id/movie_score_rating"
         android:numStars="5"
         android:isIndicator="true"

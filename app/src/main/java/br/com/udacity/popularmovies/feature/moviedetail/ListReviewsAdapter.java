@@ -1,20 +1,18 @@
 package br.com.udacity.popularmovies.feature.moviedetail;
 
 import android.content.Context;
-import android.support.annotation.NonNull;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
+import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import java.util.List;
 
 import br.com.udacity.popularmovies.R;
 import br.com.udacity.popularmovies.data.entities.Review;
-import butterknife.BindView;
-import butterknife.ButterKnife;
 
 
 public class ListReviewsAdapter extends RecyclerView.Adapter<ListReviewsAdapter.ListReviewsViewHolder> {
@@ -47,14 +45,14 @@ public class ListReviewsAdapter extends RecyclerView.Adapter<ListReviewsAdapter.
 
     class ListReviewsViewHolder extends RecyclerView.ViewHolder {
 
-        @BindView(R.id.review_author_text)
-        TextView authorTextView;
-        @BindView(R.id.review_content_text)
-        TextView contentTextView;
+        private TextView authorTextView;
+        private TextView contentTextView;
 
         ListReviewsViewHolder(View itemView) {
             super(itemView);
-            ButterKnife.bind(this, itemView);
+
+            authorTextView = itemView.findViewById(R.id.review_author_text);
+            contentTextView = itemView.findViewById(R.id.review_content_text);
         }
 
         void bind(Review review) {

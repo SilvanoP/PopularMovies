@@ -1,13 +1,11 @@
 package br.com.udacity.popularmovies.feature.listmovies;
 
+import dagger.Binds;
 import dagger.Module;
-import dagger.Provides;
 
 @Module
-public class ListMoviesModule {
+public abstract class ListMoviesModule {
 
-    @Provides
-    ListMoviesContract.Presenter providesPresenter(ListMoviesPresenter presenter) {
-        return presenter;
-    }
+    @Binds
+    public abstract ListMoviesContract.Presenter providesPresenter(ListMoviesPresenter presenter);
 }

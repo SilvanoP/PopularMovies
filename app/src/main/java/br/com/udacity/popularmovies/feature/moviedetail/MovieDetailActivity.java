@@ -3,12 +3,12 @@ package br.com.udacity.popularmovies.feature.moviedetail;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
-import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.RatingBar;
 import android.widget.TextView;
 
+import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -24,39 +24,25 @@ import br.com.udacity.popularmovies.data.entities.Review;
 import br.com.udacity.popularmovies.data.entities.Video;
 import br.com.udacity.popularmovies.util.Constants;
 import br.com.udacity.popularmovies.util.ItemClickListener;
-import butterknife.BindView;
-import butterknife.ButterKnife;
+import dagger.android.AndroidInjection;
 
 public class MovieDetailActivity extends AppCompatActivity implements MovieDetailContract.View {
 
     private static final String YOUTUBE_PACKAGE = "com.google.android.youtube";
 
-    @BindView(R.id.movie_detail_backdrop_image)
-    ImageView mBackdropImageView;
-    @BindView(R.id.movie_detail_poster_image)
-    ImageView mPosterImageView;
-    @BindView(R.id.movie_detail_name_text)
-    TextView mNameTextView;
-    @BindView(R.id.movie_detail_original_name_text)
-    TextView mOriginalNameTextView;
-    @BindView(R.id.movie_detail_overview_text)
-    TextView mOverviewTextView;
-    @BindView(R.id.movie_detail_score_rating_text)
-    TextView mScoreRatingTextView;
-    @BindView(R.id.movie_detail_score_rating)
-    RatingBar mRatingBar;
-    @BindView(R.id.movie_detail_favorite_button)
-    FloatingActionButton mIsFavoriteButton;
-    @BindView(R.id.movie_detail_trailers_list)
-    RecyclerView mTrailerRecyclerView;
-    @BindView(R.id.movie_detail_reviews_list)
-    RecyclerView mReviewsRecyclerView;
-    @BindView(R.id.empty_trailers_text)
-    TextView mEmptyTrailerTextView;
-    @BindView(R.id.empty_reviews_text)
-    TextView mEmptyReviewTextView;
-    @BindView(R.id.movie_detail_release_date_text)
-    TextView mReleaseDateTextView;
+    private ImageView mBackdropImageView;
+    private ImageView mPosterImageView;
+    private TextView mNameTextView;
+    private TextView mOriginalNameTextView;
+    private TextView mOverviewTextView;
+    private TextView mScoreRatingTextView;
+    private RatingBar mRatingBar;
+    private FloatingActionButton mIsFavoriteButton;
+    private RecyclerView mTrailerRecyclerView;
+    private RecyclerView mReviewsRecyclerView;
+    private TextView mEmptyTrailerTextView;
+    private TextView mEmptyReviewTextView;
+    private TextView mReleaseDateTextView;
 
     @Inject
     MovieDetailContract.Presenter presenter;
@@ -65,9 +51,9 @@ public class MovieDetailActivity extends AppCompatActivity implements MovieDetai
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        AndroidInjection.inject(this);
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_movie_detail);
-        ButterKnife.bind(this);
 
         init();
         presenter.setView(this);
@@ -75,6 +61,20 @@ public class MovieDetailActivity extends AppCompatActivity implements MovieDetai
     }
 
     private void init() {
+        mBackdropImageView = findViewById(R.id.movie_detail_backdrop_image);
+        mPosterImageView = findViewById(R.id.movie_detail_poster_image);
+        mNameTextView = findViewById(R.id.movie_detail_name_text);
+        mOriginalNameTextView = findViewById(R.id.movie_detail_original_name_text);
+        mOverviewTextView = findViewById(R.id.movie_detail_overview_text);
+        mScoreRatingTextView = findViewById(R.id.movie_detail_score_rating_text);
+        mRatingBar = findViewById(R.id.movie_detail_score_rating);
+        mIsFavoriteButton = findViewById(R.id.movie_detail_favorite_button);
+        mTrailerRecyclerView = findViewById(R.id.movie_detail_trailers_list);
+        mReviewsRecyclerView = findViewById(R.id.movie_detail_reviews_list);
+        mEmptyTrailerTextView = findViewById(R.id.empty_trailers_text);
+        mEmptyReviewTextView = findViewById(R.id.empty_reviews_text);
+        mReleaseDateTextView = findViewById(R.id.movie_detail_release_date_text);
+
         mIsFavoriteButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {

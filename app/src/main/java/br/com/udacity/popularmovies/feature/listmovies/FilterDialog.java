@@ -16,8 +16,6 @@ import java.util.HashMap;
 
 import br.com.udacity.popularmovies.R;
 import br.com.udacity.popularmovies.data.entities.MovieCategory;
-import butterknife.BindView;
-import butterknife.ButterKnife;
 
 public class FilterDialog extends DialogFragment implements View.OnClickListener {
 
@@ -25,23 +23,16 @@ public class FilterDialog extends DialogFragment implements View.OnClickListener
 
     private HashMap<MovieCategory, Integer> mapCategoryFilter;
 
-    @BindView(R.id.dialogFilterRadioGroup)
-    RadioGroup dialogFilterRadioGroup;
-    @BindView(R.id.dialogFilterPopularRadio)
-    RadioButton dialogFilterPopularRadio;
-    @BindView(R.id.dialogFilterTopRatedRadio)
-    RadioButton dialogFilterTopRatedRadio;
-    @BindView(R.id.dialogFilterUpcomingRadio)
-    RadioButton dialogFilterUpcomingRadio;
-    @BindView(R.id.dialogFilterFavoriteRadio)
-    RadioButton dialogFilterFavoriteRadio;
+    private RadioGroup dialogFilterRadioGroup;
+    private RadioButton dialogFilterPopularRadio;
+    private RadioButton dialogFilterTopRatedRadio;
+    private RadioButton dialogFilterUpcomingRadio;
+    private RadioButton dialogFilterFavoriteRadio;
 
-    @BindView(R.id.dialogFilterAcceptButton)
-    Button dialogFilterAcceptButton;
-    @BindView(R.id.dialogFilterCancelButton)
-    Button dialogFilterCancelButton;
+    private Button dialogFilterAcceptButton;
+    private Button dialogFilterCancelButton;
 
-    public static FilterDialog newInstance(MovieCategory category) {
+    static FilterDialog newInstance(MovieCategory category) {
         FilterDialog dialog = new FilterDialog();
         Bundle args = new Bundle();
         args.putSerializable(MOVIE_CATEGORY, category);
@@ -54,7 +45,7 @@ public class FilterDialog extends DialogFragment implements View.OnClickListener
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.dialog_filter, container);
-        ButterKnife.bind(this, view);
+        init(view);
 
         MovieCategory category = MovieCategory.POPULAR;
         if (getArguments() != null) {
@@ -82,6 +73,17 @@ public class FilterDialog extends DialogFragment implements View.OnClickListener
         dialogFilterCancelButton.setOnClickListener(this);
 
         return view;
+    }
+
+    private void init(View view) {
+        dialogFilterRadioGroup = view.findViewById(R.id.dialogFilterRadioGroup);
+        dialogFilterPopularRadio = view.findViewById(R.id.dialogFilterPopularRadio);
+        dialogFilterTopRatedRadio = view.findViewById(R.id.dialogFilterTopRatedRadio);
+        dialogFilterUpcomingRadio = view.findViewById(R.id.dialogFilterUpcomingRadio);
+        dialogFilterFavoriteRadio = view.findViewById(R.id.dialogFilterFavoriteRadio);
+
+        dialogFilterAcceptButton = view.findViewById(R.id.dialogFilterAcceptButton);
+        dialogFilterCancelButton = view.findViewById(R.id.dialogFilterCancelButton);
     }
 
     @Override

@@ -1,13 +1,11 @@
 package br.com.udacity.popularmovies.feature.moviedetail;
 
+import dagger.Binds;
 import dagger.Module;
-import dagger.Provides;
 
 @Module
-public class MovieDetailModule {
+public abstract class MovieDetailModule {
 
-    @Provides
-    MovieDetailContract.Presenter providesPresenter(MovieDetailPresenter presenter) {
-        return presenter;
-    }
+    @Binds
+    public abstract MovieDetailContract.Presenter providesPresenter(MovieDetailPresenter presenter);
 }

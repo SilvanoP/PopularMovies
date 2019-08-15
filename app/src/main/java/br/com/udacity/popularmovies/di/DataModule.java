@@ -68,7 +68,9 @@ public class DataModule {
 
     @Provides
     @Singleton
-    MoviesRepository providesMoviesRepository(MoviesRepositoryImpl repository) {
-        return repository;
+    MoviesRepository providesMoviesRepository(Context context, SharedPreferences preferences,
+                                              TheMovieDBService service, PopularMoviesDatabase database,
+                                              CacheInterceptor interceptor) {
+        return new MoviesRepositoryImpl(context, preferences, service, database, interceptor);
     }
 }

@@ -2,11 +2,11 @@ package br.com.udacity.popularmovies.feature.listmovies;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.annotation.NonNull;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.recyclerview.widget.GridLayoutManager;
@@ -21,17 +21,13 @@ import br.com.udacity.popularmovies.R;
 import br.com.udacity.popularmovies.data.entities.Movie;
 import br.com.udacity.popularmovies.data.entities.MovieCategory;
 import br.com.udacity.popularmovies.feature.moviedetail.MovieDetailActivity;
-import butterknife.BindView;
-import butterknife.ButterKnife;
+import dagger.android.AndroidInjection;
 
 public class MainActivity extends AppCompatActivity implements ListMoviesContract.View,
         FilterDialog.SortDialogListener, GridMoviesAdapter.GridAdapterClickListener {
 
-
-    @BindView(R.id.grid_recycle_view)
-    RecyclerView mGridRecycleView;
-    @BindView(R.id.main_toolbar)
-    Toolbar mToolbar;
+    private RecyclerView mGridRecycleView;
+    private Toolbar mToolbar;
 
     @Inject
     ListMoviesContract.Presenter presenter;
@@ -41,9 +37,12 @@ public class MainActivity extends AppCompatActivity implements ListMoviesContrac
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        AndroidInjection.inject(this);
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        ButterKnife.bind(this);
+
+        mGridRecycleView = findViewById(R.id.grid_recycle_view);
+        mToolbar = findViewById(R.id.main_toolbar);
 
         setSupportActionBar(mToolbar);
         if (getSupportActionBar() != null) {
@@ -52,12 +51,11 @@ public class MainActivity extends AppCompatActivity implements ListMoviesContrac
 
         init();
 
+        presenter.setView(this);
         presenter.loadData();
     }
 
     public void init() {
-        presenter.setView(this);
-
         int numColumns = getResources().getInteger(R.integer.movies_columns);
         mLayoutManager = new GridLayoutManager(this, numColumns);
         mGridRecycleView.setLayoutManager(mLayoutManager);

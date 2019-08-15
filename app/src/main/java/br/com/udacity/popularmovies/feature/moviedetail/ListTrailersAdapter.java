@@ -1,13 +1,13 @@
 package br.com.udacity.popularmovies.feature.moviedetail;
 
 import android.content.Context;
-import android.support.annotation.NonNull;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.squareup.picasso.Picasso;
@@ -17,8 +17,6 @@ import java.util.List;
 import br.com.udacity.popularmovies.R;
 import br.com.udacity.popularmovies.data.entities.Video;
 import br.com.udacity.popularmovies.util.ItemClickListener;
-import butterknife.BindView;
-import butterknife.ButterKnife;
 
 
 public class ListTrailersAdapter extends RecyclerView.Adapter<ListTrailersAdapter.ListTrailerViewHolder> {
@@ -56,15 +54,16 @@ public class ListTrailersAdapter extends RecyclerView.Adapter<ListTrailersAdapte
     }
 
     class ListTrailerViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
-        @BindView(R.id.trailer_thumbnail_image)
-        ImageView thumbnailImage;
-        @BindView(R.id.trailer_name_text)
-        TextView nameTextView;
+
+        private ImageView thumbnailImage;
+        private TextView nameTextView;
 
         ListTrailerViewHolder(View view) {
             super(view);
             view.setOnClickListener(this);
-            ButterKnife.bind(this, view);
+
+            thumbnailImage = view.findViewById(R.id.trailer_thumbnail_image);
+            nameTextView = view.findViewById(R.id.trailer_name_text);
         }
 
         void bind(Video video) {

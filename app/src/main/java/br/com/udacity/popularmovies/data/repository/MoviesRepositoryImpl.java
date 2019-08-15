@@ -16,6 +16,8 @@ import br.com.udacity.popularmovies.data.entities.MovieCategory;
 import br.com.udacity.popularmovies.data.entities.Review;
 import br.com.udacity.popularmovies.data.entities.Video;
 import br.com.udacity.popularmovies.data.entities.remote.MoviesListResponse;
+import br.com.udacity.popularmovies.data.entities.remote.ReviewsListResponse;
+import br.com.udacity.popularmovies.data.entities.remote.VideosListResponse;
 import br.com.udacity.popularmovies.data.webservice.CacheInterceptor;
 import br.com.udacity.popularmovies.data.webservice.TheMovieDBService;
 import br.com.udacity.popularmovies.feature.shared.MoviesRepository;
@@ -42,7 +44,6 @@ public class MoviesRepositoryImpl implements MoviesRepository {
     private Movie selectedMovie;
     private List<Video> movieTrailers;
 
-    @Inject
     public MoviesRepositoryImpl(Context context, SharedPreferences preferences, TheMovieDBService client,
                                 PopularMoviesDatabase database, CacheInterceptor interceptor) {
         this.context = context;
@@ -146,12 +147,25 @@ public class MoviesRepositoryImpl implements MoviesRepository {
 
     @Override
     public Single<List<Video>> getTrailers() {
-        return null;
+        return client.getVideos(String.valueOf(selectedMovie.getId()), tmdbApi)
+                .flatMap(new Function<VideosListResponse, SingleSource<? extends List<Video>>>() {
+                    @Override
+                    public SingleSource<? extends List<Video>> apply(VideosListResponse videosListResponse) throws Exception {
+                        movieTrailers = videosListResponse.getVideos();
+                        return Single.just(videosListResponse.getVideos());
+                    }
+                });
     }
 
     @Override
     public Single<List<Review>> getReviews() {
-        return null;
+        return client.getReviews(String.valueOf(selectedMovie.getId()), tmdbApi)
+                .flatMap(new Function<ReviewsListResponse, SingleSource<? extends List<Review>>>() {
+                    @Override
+                    public SingleSource<? extends List<Review>> apply(ReviewsListResponse reviewsListResponse) throws Exception {
+                        return Single.just(reviewsListResponse.getReviews());
+                    }
+                });
     }
 
     @Override
