@@ -72,8 +72,10 @@ feature
 
 - Other
 
+```
 util (contains helper classes and global constants)
 di (configuration of Dagger2 for dependence injection)
+```
 
 ## Other Information
 
