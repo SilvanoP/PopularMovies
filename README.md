@@ -21,6 +21,7 @@ This app is build using MVP Architecture
 - Model
 This layer contains the entities, access to data sources (cloud, local database and local retrofit cache)
 This layer can be found on the 'data' package.
+```
 data
   |- database
      |- MovieDAO.java (contains the calls to movies table on database)
@@ -39,9 +40,10 @@ data
   |- webservice
      |- CacheInterceptor (intercept retrofit calls to create and access the cache when needed)
      |- TheMovieDBService (contains the calls to The Movie Database through their api)
-
+```
 - Interactor
 An interface to connect the model to Presenter
+```
 feature
   |- shared
      |- MoviesRepository.java
@@ -56,15 +58,17 @@ feature
      |- ListMoviePresenter.java
   |- moviedetail
      |- MovieDetailPresenter.java
-
+```
 
 - View
 This layer contains the visual components of the app
+```
 feature
   |- listmovies
      |- MainActivity.java (the screen that shows the list of movies)
   |- moviedetail
      |- MovieDetailActivity.java (the screen that shows the detailed information of the selected movie)
+```
 
 - Other
 util (contains helper classes and global constants)
@@ -72,6 +76,6 @@ di (configuration of Dagger2 for dependence injection)
 
 ## Other Information
 
-This app tries to follow Single Responsibility Principle, that states that each class should have only on responsibility, i.e., should deal only with one functionality.
+This app tries to follow **Single Responsibility Principle**, that states that each class should have only on responsibility, i.e., should deal only with one functionality.
 
-This app also tries to be as clean as possible, being able to be easily understood, tested and maintainable.
+This app also tries to be as **clean** as possible, being able to be easily understood, tested and maintainable.
