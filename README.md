@@ -19,7 +19,8 @@ android.useAndroidX=true
 This app is build using MVP Architecture
 
 - Model
-This layer contains the entities, access to data sources (cloud, local database and local retrofit cache)
+
+This layer contains the entities, access to data sources (cloud, local database and local retrofit cache).
 This layer can be found on the 'data' package.
 ```
 data
@@ -42,6 +43,7 @@ data
      |- TheMovieDBService (contains the calls to The Movie Database through their api)
 ```
 - Interactor
+
 An interface to connect the model to Presenter
 ```
 feature
@@ -49,6 +51,7 @@ feature
      |- MoviesRepository.java
 
 - Presenter
+
 This layer serves as the middle ground between Model and View.
 It retrieves data from Model and formats according to the View needs.
 feature
@@ -61,6 +64,7 @@ feature
 ```
 
 - View
+
 This layer contains the visual components of the app
 ```
 feature
