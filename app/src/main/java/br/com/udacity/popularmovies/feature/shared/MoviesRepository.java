@@ -15,6 +15,7 @@ public interface MoviesRepository {
     Single<List<Movie>> loadNextPage(int position);
     MovieCategory getCategory();
     void changeCategory(MovieCategory category);
+    Maybe<List<Movie>> searchMovieByTitle(String title);
     void setSelectedMovie(Movie movie);
     Movie getSelectedMovie();
     Maybe<Movie> isFavorite();

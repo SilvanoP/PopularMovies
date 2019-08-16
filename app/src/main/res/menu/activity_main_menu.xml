@@ -2,11 +2,11 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
-    <item
-        android:id="@+id/refresh_movies_item"
-        android:icon="@drawable/ic_refresh"
-        android:title="@string/sort"
-        app:showAsAction="ifRoom"/>
+    <item android:id="@+id/search_item"
+        android:title="@string/search_title"
+        android:icon="@drawable/ic_search"
+        app:showAsAction="collapseActionView|ifRoom"
+        app:actionViewClass="androidx.appcompat.widget.SearchView" />
 
     <item
         android:id="@+id/sort_movies_item"

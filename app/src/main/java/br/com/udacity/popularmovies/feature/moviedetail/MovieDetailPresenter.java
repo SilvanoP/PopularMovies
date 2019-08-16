@@ -32,7 +32,7 @@ public class MovieDetailPresenter extends BasePresenterImpl<MovieDetailContract.
         weakView.get().showPosterImage(movie.getPosterUrl());
         weakView.get().showTitle(movie.getName());
         weakView.get().showOriginalName(movie.getOriginalName());
-        weakView.get().showReleaseDate(Utils.dateToString(movie.getReleaseDate(),"MM/dd/yyyy"));
+        weakView.get().showReleaseDate(Utils.formatDate(movie.getReleaseDate()));
         weakView.get().showRating(movie.getVoteAverage());
         weakView.get().showOverview(movie.getOverview());
         disposable.add(repository.isFavorite()

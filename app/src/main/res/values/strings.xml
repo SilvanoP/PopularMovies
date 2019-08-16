@@ -16,22 +16,24 @@
     <string name="sort_option_upcoming">Upcoming</string>
     <string name="sort_option_favorites">Favorites</string>
 
-    <string name="ok">OK</string>
-
     <string name="accept">Accept</string>
+    <string name="author">Author:</string>
     <string name="cancel">Cancel</string>
     <string name="category">Category</string>
-    <string name="title">Title</string>
-    <string name="original_title">Original Title</string>
-    <string name="release_date">Release Date</string>
-    <string name="overview">Overview</string>
-    <string name="movies_detail_poster_description">Poster of the movie</string>
-    <string name="trailers">Trailers</string>
-    <string name="reviews">Reviews</string>
-    <string name="rating_score">0.0</string>
-    <string name="author">Author:</string>
-    <string name="empty_trailers">No trailers found!</string>
     <string name="empty_reviews">No reviews found!</string>
+    <string name="empty_trailers">No trailers found!</string>
+    <string name="movies_detail_poster_description">Poster of the movie</string>
+    <string name="no_movies_found">No movies found, please try again.</string>
+    <string name="ok">OK</string>
+    <string name="original_title">Original Title</string>
+    <string name="overview">Overview</string>
+    <string name="release_date">Release Date</string>
+    <string name="rating_score">0.0</string>
+    <string name="reviews">Reviews</string>
+    <string name="search_title">Search</string>
+    <string name="search_hint">Search</string>
+    <string name="title">Title</string>
+    <string name="trailers">Trailers</string>
 
     <!-- Values related to images sizes on urls -->
     <string name="youtube_thumb_endpoint" translatable="false">/1.jpg</string>

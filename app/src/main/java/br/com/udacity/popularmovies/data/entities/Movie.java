@@ -8,7 +8,6 @@ import androidx.room.Entity;
 import androidx.room.PrimaryKey;
 
 import com.google.gson.annotations.SerializedName;
-import java.util.Date;
 
 @Entity
 public class Movie implements Parcelable {
@@ -33,7 +32,7 @@ public class Movie implements Parcelable {
     private String overview;
     @SerializedName("release_date")
     @ColumnInfo(name = "release_date")
-    private Date releaseDate;
+    private String releaseDate;
     private transient boolean isFavorite;
 
     public Movie(){
@@ -48,7 +47,7 @@ public class Movie implements Parcelable {
         originalName = in.readString();
         voteAverage = in.readFloat();
         overview = in.readString();
-        releaseDate = new Date(in.readLong());
+        releaseDate = in.readString();
         isFavorite = in.readInt() != 0;
     }
 
@@ -110,11 +109,11 @@ public class Movie implements Parcelable {
         this.overview = overview;
     }
 
-    public Date getReleaseDate() {
+    public String getReleaseDate() {
         return releaseDate;
     }
 
-    public void setReleaseDate(Date releaseDate) {
+    public void setReleaseDate(String releaseDate) {
         this.releaseDate = releaseDate;
     }
 
@@ -144,7 +143,7 @@ public class Movie implements Parcelable {
         dest.writeString(originalName);
         dest.writeFloat(voteAverage);
         dest.writeString(overview);
-        dest.writeLong(releaseDate.getTime());
+        dest.writeString(releaseDate);
         int favorite = isFavorite ? 1 : 0;
         dest.writeInt(favorite);
     }

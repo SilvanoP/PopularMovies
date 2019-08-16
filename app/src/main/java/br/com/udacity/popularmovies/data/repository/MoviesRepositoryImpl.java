@@ -2,7 +2,11 @@ package br.com.udacity.popularmovies.data.repository;
 
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.net.Uri;
+import android.util.Log;
 
+import java.io.UnsupportedEncodingException;
+import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.Callable;
@@ -24,6 +28,7 @@ import br.com.udacity.popularmovies.feature.shared.MoviesRepository;
 import br.com.udacity.popularmovies.util.Constants;
 import br.com.udacity.popularmovies.util.Utils;
 import io.reactivex.Maybe;
+import io.reactivex.MaybeSource;
 import io.reactivex.Single;
 import io.reactivex.SingleSource;
 import io.reactivex.functions.Consumer;
@@ -134,8 +139,32 @@ public class MoviesRepositoryImpl implements MoviesRepository {
 
     @Override
     public void changeCategory(MovieCategory category) {
+        preferences.edit().putInt(Constants.PREFERENCE_SORT_MOVIES, category.getValue()).apply();
         currentCategory = category;
         currentPage = 1;
+    }
+
+    @Override
+    public Maybe<List<Movie>> searchMovieByTitle(String title) {
+        interceptor.setOnline(Utils.isOnline(context));
+        Log.d(this.getClass().getSimpleName(), "Title: " + title);
+        try {
+            title = URLEncoder.encode(title, "UTF-8");
+            Log.d(this.getClass().getSimpleName(), "Title encoded: " + title);
+        } catch (UnsupportedEncodingException e) {
+            e.printStackTrace();
+        }
+
+        return client.getMoviesByTitle(tmdbApi, title, 1)
+                .flatMap(new Function<MoviesListResponse, MaybeSource<List<Movie>>>() {
+                    @Override
+                    public MaybeSource<List<Movie>> apply(MoviesListResponse moviesListResponse) {
+                        if (moviesListResponse == null) {
+                            return Maybe.just((List<Movie>) new ArrayList<Movie>());
+                        }
+                        return Maybe.just(moviesListResponse.getMovies());
+                    }
+                });
     }
 
     @Override

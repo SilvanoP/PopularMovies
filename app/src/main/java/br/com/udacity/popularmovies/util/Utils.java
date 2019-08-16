@@ -17,9 +17,10 @@ public class Utils {
         return netInfo != null && netInfo.isConnected();
     }
 
-    public static String dateToString(Date date) {
-        String mask = "yyyy-MM-dd"; // default mask for this app
-        return dateToString(date, mask);
+    public static String formatDate(String date) {
+        String[] segments = date.split("-");
+        String formattedDate = segments[2] + "/" + segments[1] + "/" + segments[0];
+        return formattedDate;
     }
 
     public static String dateToString(Date date, String mask) {

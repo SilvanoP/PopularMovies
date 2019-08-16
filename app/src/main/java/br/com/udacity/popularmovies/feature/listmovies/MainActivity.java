@@ -1,15 +1,21 @@
 package br.com.udacity.popularmovies.feature.listmovies;
 
+import android.app.SearchManager;
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.text.TextUtils;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.ProgressBar;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.SearchView;
 import androidx.appcompat.widget.Toolbar;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -56,7 +62,13 @@ public class MainActivity extends AppCompatActivity implements ListMoviesContrac
         init();
 
         presenter.setView(this);
-        presenter.loadData();
+
+        handleIntent(getIntent());
+    }
+
+    @Override
+    protected void onNewIntent(Intent intent) {
+        handleIntent(intent);
     }
 
     public void init() {
@@ -91,6 +103,11 @@ public class MainActivity extends AppCompatActivity implements ListMoviesContrac
     }
 
     @Override
+    public void noMoviesFound() {
+        Toast.makeText(this, R.string.no_movies_found, Toast.LENGTH_LONG).show();
+    }
+
+    @Override
     public void refreshMovieList(List<Movie> movies) {
         mAdapter.swapItems(movies);
         mGridRecycleView.setAdapter(mAdapter);
@@ -122,6 +139,10 @@ public class MainActivity extends AppCompatActivity implements ListMoviesContrac
     public boolean onCreateOptionsMenu(Menu menu) {
         MenuInflater inflater = getMenuInflater();
         inflater.inflate(R.menu.activity_main_menu, menu);
+
+        SearchManager manager = (SearchManager) getSystemService(Context.SEARCH_SERVICE);
+        SearchView searchView = (SearchView) menu.findItem(R.id.search_item).getActionView();
+        searchView.setSearchableInfo(manager.getSearchableInfo(getComponentName()));
         return true;
     }
 
@@ -131,11 +152,19 @@ public class MainActivity extends AppCompatActivity implements ListMoviesContrac
             case R.id.sort_movies_item:
                 presenter.onSortMenuSelected();
                 return true;
-            case R.id.refresh_movies_item:
-                presenter.loadData();
-                return true;
+
             default:
                 return super.onOptionsItemSelected(item);
+        }
+    }
+
+    private void handleIntent(Intent intent) {
+        Log.d(this.getClass().getSimpleName(),"Hanlde intent");
+        String movieTitle = intent.getStringExtra(SearchManager.QUERY);
+        if (!TextUtils.isEmpty(movieTitle)) {
+            presenter.searchMovie(movieTitle);
+        } else {
+            presenter.loadData();
         }
     }
 

@@ -3,6 +3,7 @@ package br.com.udacity.popularmovies.data.webservice;
 import br.com.udacity.popularmovies.data.entities.remote.MoviesListResponse;
 import br.com.udacity.popularmovies.data.entities.remote.ReviewsListResponse;
 import br.com.udacity.popularmovies.data.entities.remote.VideosListResponse;
+import io.reactivex.Maybe;
 import io.reactivex.Single;
 import retrofit2.Call;
 import retrofit2.http.GET;
@@ -24,6 +25,12 @@ public interface TheMovieDBService {
     @GET("/3/movie/upcoming")
     Single<MoviesListResponse> getUpcomingMovies(
             @Query("api_key") String apiKey,
+            @Query("page") int page
+    );
+    @GET("/3/search/movie")
+    Maybe<MoviesListResponse> getMoviesByTitle(
+            @Query("api_key") String apiKey,
+            @Query("query") String title,
             @Query("page") int page
     );
     @GET("/3/movie/{movie_id}/reviews")

@@ -1,5 +1,7 @@
 package br.com.udacity.popularmovies.data.webservice;
 
+import android.util.Log;
+
 import java.io.IOException;
 
 import okhttp3.Interceptor;
@@ -26,6 +28,9 @@ public class CacheInterceptor implements Interceptor {
                     .header("Cache-Control", "public, only-if-cached, max-stale=" + 60 * 60 * 24 * 7)
                     .build();
         }
+
+        Log.d(this.getClass().getSimpleName(), request.url().toString());
+        Log.d(this.getClass().getSimpleName(), request.url().encodedQuery());
         return chain.proceed(request);
     }
 }

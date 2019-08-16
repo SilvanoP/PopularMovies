@@ -12,6 +12,7 @@ public interface ListMoviesContract {
     interface View extends BaseView {
         void showProgress();
         void hideProgress();
+        void noMoviesFound();
         void refreshMovieList(List<Movie> movies);
         void addMovies(List<Movie> movies);
         void showSortDialog(MovieCategory category);
@@ -24,5 +25,6 @@ public interface ListMoviesContract {
         void onSortMenuSelected();
         void changeCategory(MovieCategory category);
         void onMovieSelected(Movie movie);
+        void searchMovie(String movieTitle);
     }
 }
